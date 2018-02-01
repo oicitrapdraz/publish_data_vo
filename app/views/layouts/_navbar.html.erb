@@ -18,23 +18,18 @@
         <button type='submit' class='btn btn-default'>Submit</button>
       </form>
       <ul class='nav navbar-nav navbar-right'>
+        <% if admin_signed_in? %>
         <li class='dropdown'>
-          <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>Dropdown <span class='caret'></span></a>
+          <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>Menu <span class='caret'></span></a>
           <ul class='dropdown-menu'>
-            <li><a href='#'>Action</a></li>
-            <li><a href='#'>Another action</a></li>
-            <li><a href='#'>Something else here</a></li>
+            <li><a href='#'>Revisar peticiones</a></li>
+            <li><a href='#'>Generar resource descriptor</a></li>
+            <li><a href='#'>Verificación final</a></li>
             <li role='separator' class='divider'></li>
-            <li><a href='#'>Separated link</a></li>
-            <li role='separator' class='divider'></li>
-            <li><a href='#'>One more separated link</a></li>
+            <li><a href='#'>Publicación de datos</a></li>
           </ul>
         </li>
-        <li><a href='#'>Link</a></li>
-        <% if admin_signed_in? %>
-        <li>
-          <%= link_to('Logout', destroy_admin_session_path, method: :delete) %>        
-        </li>
+        <li><%= link_to('Logout', destroy_admin_session_path, method: :delete) %></li>
         <% end %>
       </ul>
     </div>

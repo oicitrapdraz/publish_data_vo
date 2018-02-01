@@ -9,7 +9,7 @@ class CreateMetadata < ActiveRecord::Migration[5.1]
       t.string :subjects
       t.string :instrument
       t.string :facility
-      t.string :type
+      t.string :type_alt
       t.string :coverage_profile
       t.string :coverage_waveband
 

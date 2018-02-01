@@ -1,45 +1,51 @@
-<%= form_with url: publish_metadata_path, method: :post, class: 'form-horizontal col-sm-2' do |form| %>
-	<div class='form-group'>
-		<%= form.label :title %><br />
-		<%= form.text_field :title, class: 'form-control', placeholder: 'A title for your dataset' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :description %><br />
-		<%= form.text_area :description, class: 'form-control', placeholder: 'Give a description for your data' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :creation_date %><br />
-		<%= form.date_field :creation_date, class: 'form-control', placeholder: 'The date in which your data was created' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :creators %><br />
-		<%= form.text_field :creators, class: 'form-control', placeholder: 'If there\'s more than one, separate by semicolon' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :subjects %><br />
-		<%= form.text_field :subjects, class: 'form-control', placeholder: 'If there\'s more than one, separate by semicolon' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :instrument %><br />
-		<%= form.text_field :instrument, class: 'form-control', placeholder: 'The instrument that produced the data' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :facility %><br />
-		<%= form.text_field :facility, class: 'form-control', placeholder: 'The facility at which the data was taken' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :type %><br />
-		<%= form.select :type, options_for_select(@types.map { |t| [t.name, t.id] }), {}, class: 'form-control' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :coverage_profile %><br />
-		<%= form.text_field :coverage_profile, class: 'form-control', placeholder: 'The space-time coordinates (STC) according to the IVOA STC data model' %>
-	</div>
-	<div class='form-group'>
-		<%= form.label :coverage_waveband %><br />
-		<%= form.select :coverage_waveband, options_for_select(@coverage_wavebands.map { |t| [t.name, t.id] }), {}, multiple: true, class: 'form-control' %>
-	</div>
-	<div class='actions'>
-		<%= form.submit %>
-	</div>
-<% end %>
+<div class='col-xs-6 col-xs-offset-3'>
+	<%= form_with url: publish_metadata_path, method: :post do |form| %>
+		<div class='form-group'>
+			<%= form.label :title %><br />
+			<%= form.text_field :title, class: 'form-control', placeholder: 'A title for your dataset' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :description %><br />
+			<%= form.text_area :description, class: 'form-control', placeholder: 'Give a description for your data' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :creation_date %><br />
+			<%= form.datetime_field :creation_date, class: 'form-control', placeholder: 'The date in which your data was created' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :creators %><br />
+			<%= form.text_field :creators, class: 'form-control', placeholder: 'If there\'s more than one, separate by semicolon' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :subjects %><br />
+			<%= form.text_field :subjects, class: 'form-control', placeholder: 'If there\'s more than one, separate by semicolon' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :instrument %><br />
+			<%= form.text_field :instrument, class: 'form-control', placeholder: 'The instrument that produced the data' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :facility %><br />
+			<%= form.text_field :facility, class: 'form-control', placeholder: 'The facility at which the data was taken' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :type %><br />
+			<%= form.select :type, options_for_select(@types.map { |t| [t.name] }), {}, class: 'form-control' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :coverage_profile %><br />
+			<%= form.text_field :coverage_profile, class: 'form-control', placeholder: 'The space-time coordinates (STC) according to the IVOA STC data model' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :coverage_waveband %><br />
+			<%= form.select :coverage_waveband, options_for_select(@coverage_wavebands.map { |t| [t.name] }), {}, multiple: true, class: 'form-control' %>
+		</div>
+		<div class='form-group'>
+			<%= form.label :data %><br />
+			<%= form.file_field :data, placeholder: 'The facility at which the data was taken' %>
+		</div>
+		<div class='actions'>
+			<br /><%= form.submit %>
+		</div>
+	<% end %>
+</div>

@@ -10,8 +10,14 @@
 
   <body>
   <%= render 'layouts/navbar' %>
+
   	<div class='container-fluid'>
-  		<%= yield %>
+      <div class="panel panel-default col-xs-10 col-xs-offset-1">
+        <div class="panel-body">
+          <br />
+  		    <%= yield %>
+        </div>
+      </div>
   	</div>
   </body>
 </html>
