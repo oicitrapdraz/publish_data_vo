@@ -6,7 +6,8 @@ class PublishController < ApplicationController
     end
 
     if request.post?
-      if true #@product.save
+      # crear data product y metadata
+      if true #product.save y metadata.save
         redirect_to action: 'parse_match'
       end
     end
