@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  get 'publish/metadata'
+  devise_for :admins
+  root 'home#index'
+
+  match 'publish/metadata', via: [:get, :post]
 
   get 'publish/parse_match'
 
@@ -8,6 +11,4 @@ Rails.application.routes.draw do
   get 'publish/rd'
 
   get 'publish/final_check'
-
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

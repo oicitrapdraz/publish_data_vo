@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  data_product: one
+  title: MyString
+  description: MyText
+  creation_date: 2018-01-31 12:15:52
+  creators: MyString
+  subjects: MyString
+  instrument: MyString
+  facility: MyString
+  type: 
+  coverage_profile: MyString
+  coverage_waveband: MyString
+
+two:
+  data_product: two
+  title: MyString
+  description: MyText
+  creation_date: 2018-01-31 12:15:52
+  creators: MyString
+  subjects: MyString
+  instrument: MyString
+  facility: MyString
+  type: 
+  coverage_profile: MyString
+  coverage_waveband: MyString

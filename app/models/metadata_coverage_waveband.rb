@@ -1,0 +1,2 @@
+class MetadataCoverageWaveband < ApplicationRecord
+end
