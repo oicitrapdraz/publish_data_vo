@@ -10,6 +10,12 @@
 
   <body>
   <%= render 'layouts/navbar' %>
+    <% if notice %>
+    <p class="alert alert-success"><%= notice %></p>
+    <% elsif alert %>
+    <br>
+    <p class="alert alert-danger"><%= alert %></p>
+    <% end %>
 
   	<div class='container-fluid'>
       <div class="panel panel-default col-xs-10 col-xs-offset-1">

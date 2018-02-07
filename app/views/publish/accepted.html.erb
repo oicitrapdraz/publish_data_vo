@@ -21,7 +21,7 @@
       <td><%= data_product.filename %></td>
       <td><%= data_product.format %></td>
       <td><%= link_to 'Show', data_product_show_path(id: data_product.id) %></td>
-      <td><%= link_to 'Accept', data_product_accept_path(id: data_product.id), method: :post %></td>
+      <td><%= link_to 'Revoke', data_product_revoke_path(id: data_product.id), method: :post %></td>
     </tr>
     <% end %>
   </tbody>

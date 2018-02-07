@@ -7,7 +7,7 @@
         <span class='icon-bar'></span>
         <span class='icon-bar'></span>
       </button>
-      <a class='navbar-brand' href='#'>ChiVO</a>
+      <%= link_to 'ChiVO', root_path, class: 'navbar-brand' %>
     </div>
 
     <div class='collapse navbar-collapse' id='bs-example-navbar-collapse-1'>
@@ -22,9 +22,10 @@
         <li class='dropdown'>
           <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>Menu <span class='caret'></span></a>
           <ul class='dropdown-menu'>
-            <li><a href='#'>Revisar peticiones</a></li>
-            <li><a href='#'>Generar resource descriptor</a></li>
-            <li><a href='#'>Verificación final</a></li>
+            <li><%= link_to 'Revisar peticiones de publicaciones', publish_first_check_path %></li>
+            <li><%= link_to 'Peticiones de publicaciones aceptadas', publish_accepted_path %></li>
+            <li><%= link_to 'Generar resource descriptor', publish_generate_rd_path %></li>
+            <li><a href='#'>Realizar verificación final</a></li>
             <li role='separator' class='divider'></li>
             <li><a href='#'>Publicación de datos</a></li>
           </ul>
