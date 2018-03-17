@@ -1,0 +1,8 @@
+One of Radio
+Millimeter
+Infrared
+Optical
+UV
+EUV
+Xray
+Gammaray

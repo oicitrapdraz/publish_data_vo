@@ -4,7 +4,6 @@ class Metadatum < ApplicationRecord
   validates :data_product_id, presence: true
   validates :title, presence: true
   validates :description, presence: true
-  validates :creation_date, presence: true
   validates :creators, presence: true
   validates :subjects, presence: true
   validates :instrument, presence: true

@@ -4,7 +4,6 @@ class CreateMetadata < ActiveRecord::Migration[5.1]
       t.references :data_product, foreign_key: true
       t.string :title
       t.text :description
-      t.datetime :creation_date
       t.string :creators
       t.string :subjects
       t.string :instrument

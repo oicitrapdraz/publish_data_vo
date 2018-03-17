@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201023006) do
+ActiveRecord::Schema.define(version: 20180213041325) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,11 +42,26 @@ ActiveRecord::Schema.define(version: 20180201023006) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "fits_columns", force: :cascade do |t|
+    t.bigint "data_product_id"
+    t.integer "hdu_index"
+    t.string "identifier"
+    t.string "name"
+    t.string "description"
+    t.string "type_alt"
+    t.integer "verb_level"
+    t.string "unit"
+    t.string "ucds"
+    t.boolean "required"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["data_product_id"], name: "index_fits_columns_on_data_product_id"
+  end
+
   create_table "metadata", force: :cascade do |t|
     t.bigint "data_product_id"
     t.string "title"
     t.text "description"
-    t.datetime "creation_date"
     t.string "creators"
     t.string "subjects"
     t.string "instrument"
@@ -59,17 +74,6 @@ ActiveRecord::Schema.define(version: 20180201023006) do
     t.index ["data_product_id"], name: "index_metadata_on_data_product_id"
   end
 
-  create_table "metadata_coverage_wavebands", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "metadata_types", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
+  add_foreign_key "fits_columns", "data_products"
   add_foreign_key "metadata", "data_products"
 end

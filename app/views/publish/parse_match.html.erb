@@ -1,2 +1,32 @@
-<h1>Publish#parse_match</h1>
-<p>Find me in app/views/publish/parse_match.html.erb</p>
+<% flash.each do |key, value| %>
+  <%= content_tag :div, value, class: 'alert alert-danger' %>
+<% end %>
+
+<div class='col-xs-8 col-xs-offset-2'>
+	<%= form_with url: publish_parse_match_path, method: :post do |form| %>
+
+		<%= hidden_field_tag 'id', "#{@data_product.id}" %>
+
+		<div id='column_set'>
+			<%= render partial: "column" %>
+		</div>
+
+		<a href="javascript:;" id="addNewColumn">Add New Column</a>
+
+		<div class='actions'>
+			<br /><%= form.submit %>
+		</div>
+	<% end %>
+
+	<div class="hide" id="new_column_form">
+	  <%= render partial: "column", locals: {skill: false} %>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#addNewColumn").click(function(){
+    $("#column_set").append($("#new_column_form").html());
+  });
+});
+</script>

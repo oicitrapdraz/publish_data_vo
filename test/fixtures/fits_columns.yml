@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  data_product: one
+  hdu_index: 1
+  identifier: MyString
+  name: MyString
+  description: MyString
+  type: 
+  verb_level: 1
+  unit: MyString
+  ucds: MyString
+  required: false
+
+two:
+  data_product: two
+  hdu_index: 1
+  identifier: MyString
+  name: MyString
+  description: MyString
+  type: 
+  verb_level: 1
+  unit: MyString
+  ucds: MyString
+  required: false
