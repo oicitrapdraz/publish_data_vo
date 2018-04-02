@@ -13,7 +13,7 @@ class PublishController < ApplicationController
     if request.post?
       begin
 
-        # Create resource_directory and write raw_data there
+        # Create the resource_directory and write raw_data there
 
         dachs_directory = File.read('dachs_directory')
 
@@ -39,7 +39,7 @@ class PublishController < ApplicationController
 
         data_product = DataProduct.create(status: 0, schema: schema, resource_directory: resource_directory, filename: File.join('data', uploaded_data.original_filename), format: raw_data_format)
 
-        subjects = metadatum_params[:subjects].reject { |s| cw.empty? }.join(';')
+        subjects = metadatum_params[:subjects].reject { |s| s.empty? }.join(';')
 
         coverage_waveband = metadatum_params[:coverage_waveband].reject { |cw| cw.empty? }.join(';')
 
@@ -59,17 +59,40 @@ class PublishController < ApplicationController
     if request.get?
       @data_product = DataProduct.find(params[:id])
 
-      # Leyendo el contenido del archivo FITS
+      # Leyendo y parseando el contenido del archivo FITS
 
-      result = `python fits_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)}`
+      result = `python fits_parser_2.py #{File.join(@data_product.resource_directory, @data_product.filename)}`
 
       fits = JSON.parse(result)
 
-      print(fits['hdu'].first['content'])
+      #0..(fits['hdu'].length - 1)
+      #fits['hdu'].first['content']
 
-      @hdu_indexes = 0..(fits['hdu'].length - 1)
+      @hdu_indexes = []
+      @columns = []
+      @units = ['No unit']
+      @ucds = ['No UCD']
 
-      @columns = fits['hdu'].first['content']
+      fits['content'].each { |hdu|
+        @hdu_indexes.push(hdu['index'])
+        
+        if hdu['columns']
+          @columns.concat(hdu['columns'])
+        end
+
+        if hdu['units']
+          @units.concat(hdu['units'])
+        end
+
+        if hdu['columns']
+          @ucds.concat(hdu['columns'])
+        end
+      }
+
+      @hdu_indexes.uniq!
+      @columns.uniq!
+      @units.uniq!
+      @ucds.uniq!
     end
 
     if request.post?
@@ -133,7 +156,6 @@ class PublishController < ApplicationController
             xml.meta('name' => 'instrument') { xml.text("#{data_product.metadatum.instrument}") }
 
             xml.meta('name' => 'coverage') do
-              xml.meta('name' => 'profile') { xml.text("#{data_product.metadatum.coverage_profile}") }
               data_product.metadatum.coverage_waveband.split(';').map(&:strip).each do |waveband|
                 xml.meta('name' => 'waveband') { xml.text("#{waveband}") }
               end
@@ -178,6 +200,6 @@ class PublishController < ApplicationController
   private
 
     def metadatum_params
-      params.permit(:title, :description, :creators, :subjects, :instrument, :facility, :type_alt, :coverage_profile, coverage_waveband: [])
+      params.permit(:title, :description, :creators, :instrument, :facility, :type_alt, subjects: [], coverage_waveband: [])
     end
 end

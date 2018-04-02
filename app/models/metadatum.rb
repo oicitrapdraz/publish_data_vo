@@ -9,6 +9,5 @@ class Metadatum < ApplicationRecord
   validates :instrument, presence: true
   validates :facility, presence: true
   validates :type_alt, presence: true
-  validates :coverage_profile, presence: true
   validates :coverage_waveband, presence: true
 end

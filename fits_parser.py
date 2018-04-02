@@ -11,14 +11,14 @@ if __name__ == '__main__':
     for i in range(len(hdulist)):
         keys = set(list(hdulist[i].header.keys()))
 
-        hdu = []
+        hd = []
 
         for key in keys:
             val = hdulist[i].header[key]
             if (isinstance(val, str) and '\n' not in val):
-                hdu.append(['{}: {}'.format(key, val), val])
+                hd.append(['{}: {}'.format(key, val), val])
 
-        hdu_list.append({'index': i, 'content': hdu})
+        hdu_list.append({'index': i, 'header': hd})
 
     result = {'hdu': hdu_list}
 

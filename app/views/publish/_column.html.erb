@@ -28,7 +28,7 @@
 		</div>
 		<div class='form-group'>
 			<%= label_tag :unit %><br />
-			<%= text_field_tag 'unit[]', nil, class: 'form-control', placeholder: 'The physical unit for this column' %>
+			<%= select_tag 'unit[]', options_for_select(@units), class: 'form-control', placeholder: 'The physical unit for this column' %>
 		</div>
 		<div class='form-group'>
 			<%= label_tag :required, 'Is this column required?' %><br />

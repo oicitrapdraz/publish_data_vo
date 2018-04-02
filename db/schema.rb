@@ -67,7 +67,6 @@ ActiveRecord::Schema.define(version: 20180213041325) do
     t.string "instrument"
     t.string "facility"
     t.string "type_alt"
-    t.string "coverage_profile"
     t.string "coverage_waveband"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
