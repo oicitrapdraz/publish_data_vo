@@ -1,40 +1,40 @@
-		<hr />
+<hr />
 
-		<p><h3>Column</h3></p>
+<p><h3>Column</h3></p>
 
-		<div class='form-group'>
-			<%= label_tag :hdu_index, 'HDU index' %><br />
-			<%= select_tag 'hdu_index[]', options_for_select(@hdu_indexes, 0), class: 'form-control' %>
-		</div>
-		<div class='form-group'>
-			<%= label_tag :identifier %><br />
-			<%= select_tag 'identifier[]', options_for_select(@columns), class: 'form-control' %>
-		</div>
-		<div class='form-group'>
-			<%= label_tag :name %><br />
-			<%= text_field_tag 'name[]', nil, class: 'form-control', placeholder: 'A name for this column' %>
-		</div>
-		<div class='form-group'>
-			<%= label_tag :description %><br />
-			<%= text_field_tag 'description[]', nil, class: 'form-control', placeholder: 'A description for this column' %>
-		</div>
-		<div class='form-group'>
-			<%= label_tag :type %><br />
-			<%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }), class: 'form-control' %>
-		</div>
-		<div class='form-group'>
-			<%= label_tag :verb_level %><br />
-			<%= select_tag 'verb_level[]', options_for_select(1..30), class: 'form-control' %>
-		</div>
-		<div class='form-group'>
-			<%= label_tag :unit %><br />
-			<%= select_tag 'unit[]', options_for_select(@units), {include_blank: 'None', class: 'form-control'} %>
-		</div>
-		<div class='form-group'>
-			<%= label_tag :UCD %><br />
-			<%= select_tag 'ucds[]', options_for_select(@ucds), {include_blank: 'None', class: 'form-control'} %>
-		</div>
-		<div class='form-group'>
-			<%= label_tag :required, 'Is this column required?' %><br />
-			<%= select_tag 'required[]', options_for_select(['Yes', 'No']), class: 'form-control' %>
-		</div>
+<div class='form-group'>
+	<%= label_tag :hdu_index, 'HDU index' %><br />
+	<%= select_tag 'hdu_index[]', options_for_select(@hdu_indexes, 0), class: 'form-control' %>
+</div>
+<div class='form-group'>
+	<%= label_tag :identifier %><br />
+	<%= select_tag 'identifier[]', options_for_select(@columns), class: 'form-control' %>
+</div>
+<div class='form-group'>
+	<%= label_tag :name %><br />
+	<%= text_field_tag 'name[]', nil, class: 'form-control', placeholder: 'A name for this column' %>
+</div>
+<div class='form-group'>
+	<%= label_tag :description %><br />
+	<%= text_field_tag 'description[]', nil, class: 'form-control', placeholder: 'A description for this column' %>
+</div>
+<div class='form-group'>
+	<%= label_tag :type %><br />
+	<%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }), class: 'form-control' %>
+</div>
+<div class='form-group'>
+	<%= label_tag :verb_level %><br />
+	<%= select_tag 'verb_level[]', options_for_select(1..30), class: 'form-control' %>
+</div>
+<div class='form-group'>
+	<%= label_tag :unit %><br />
+	<%= select_tag 'unit[]', options_for_select(@units), {include_blank: 'None', class: 'form-control'} %>
+</div>
+<div class='form-group'>
+	<%= label_tag :UCDs, 'UCDs' %><br />
+	<%= select_tag 'ucds[]', options_for_select(@ucds), {include_blank: 'None', class: 'form-control'} %>
+</div>
+<div class='form-group'>
+	<%= label_tag :required, 'Is this column required?' %><br />
+	<%= select_tag 'required[]', options_for_select(['Yes', 'No']), class: 'form-control' %>
+</div>

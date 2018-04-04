@@ -21,3 +21,27 @@
 <p><strong>Facility</strong>: <%= @data_product.metadatum.facility %></p>
 <p><strong>Type</strong>: <%= @data_product.metadatum.type_alt %></p>
 <p><strong>Coverage waveband</strong>: <%= @data_product.metadatum.coverage_waveband %></p>
+
+<hr />
+
+<h2>Columns</h2>
+
+<% @data_product.fits_columns.each do |col| %>
+	<h4><%= col.name %> (<%= col.identifier %>)</h4>
+	
+	<p><strong>HDU</strong>: <%= col.hdu_index %></p>
+	<p><strong>Description</strong>: <%=  col.description %></p>
+	<p><strong>Type</strong>: <%=  col.type_alt %></p>
+	<p><strong>Verb</strong>: <%=  col.verb_level %></p>
+
+	<% if not col.unit.blank? %>
+	<p><strong>Unit</strong>: <%=  col.unit %></p>
+	<% end %>
+
+	<% if not col.unit.blank? %>
+	<p><strong>UCDs</strong>: <%=  col.ucds %></p>
+	<% end %>
+	
+	<p><strong>Required</strong>: <%=  col.required %></p>
+	<br />
+<% end %>

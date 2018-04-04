@@ -68,7 +68,7 @@ class PublishController < ApplicationController
       @hdu_indexes = []
       @columns = []
       @units = []
-      @ucds = []
+      @ucds = [['ID', 'meta.id;meta.main']]
 
       fits['content'].each { |hdu|
         @hdu_indexes.push(hdu['index'])
@@ -193,10 +193,14 @@ class PublishController < ApplicationController
 
             xml.table(table_att) do
               data_product.fits_columns.each do |col|
-                if not col.ucds.blank? and not col.unit.blank? 
-                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'ucd' => "#{col.ucds}", 'unit' => "#{col.unit}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
-                else
+                if col.ucds.blank? and col.unit.blank? 
                   column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
+                elsif col.ucds.blank?
+                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'unit' => "#{col.unit}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
+                elsif col.unit.blank?
+                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'ucd' => "#{col.ucds}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
+                else
+                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'ucd' => "#{col.ucds}", 'unit' => "#{col.unit}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
                 end
 
                 xml.column(column_att)
@@ -206,7 +210,7 @@ class PublishController < ApplicationController
             xml.data('id' => 'import') do
               xml.sources { xml.text("#{data_product.filename}") }
 
-              xml.fitsTableGrammar('hdu' => "main")
+              xml.fitsTableGrammar('hdu' => "#{data_product.fits_columns.first.hdu_index}")
 
               xml.make('table' => 'main') do
                 xml.rowmaker do
@@ -214,6 +218,26 @@ class PublishController < ApplicationController
                     xml.map('dest' => "#{col.name}") { xml.text("@#{col.identifier}") }
                   end
                 end
+              end
+            end
+
+            id_prescence = false
+
+            data_product.fits_columns.each do |col|
+              id_prescence = true if col.ucds == 'meta.id;meta.main'
+            end
+
+            if ra_presence and dec_presence and id_prescence
+              xml.service('id' => 'cone', 'defaultRenderer' => 'form', 'allowed' => 'scs.xml,form,static') do
+                xml.meta('name' => 'shortname') { xml.text("@#{data_product.metadatum.title.split(' ').first.downcase} cone") }
+
+                xml.scsCore('queriedTable' => 'main') do
+                  xml.FEED('source' => '//scs#coreDescs')
+                end
+
+                xml.publish('render' => 'scs.xml', 'sets' => 'ivo_managed')
+
+                xml.outputTable('verbLevel' => '20')
               end
             end
           end
