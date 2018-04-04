@@ -22,7 +22,7 @@
 		</div>
 		<div class='form-group'>
 			<%= form.label :subjects %><br />
-			<%= form.select :subjects, options_for_select(@subjects.map { |s| [s.strip] }.sort), {}, multiple: true, class: 'form-control' %>
+			<%= form.select :subjects, options_for_select(@subjects.map { |s| [s.strip] }), {}, multiple: true, class: 'form-control' %>
 		</div>
 		<div class='form-group'>
 			<%= form.label :instrument %><br />
@@ -34,11 +34,11 @@
 		</div>
 		<div class='form-group'>
 			<%= form.label :type %><br />
-			<%= form.select :type_alt, options_for_select(@types.map { |t| [t.strip] }.sort), {}, class: 'form-control' %>
+			<%= form.select :type_alt, options_for_select(@types.map { |t| [t.strip] }), {}, class: 'form-control' %>
 		</div>
 		<div class='form-group'>
 			<%= form.label :coverage_waveband %><br />
-			<%= form.select :coverage_waveband, options_for_select(@coverage_wavebands.map { |cw| [cw.strip] }.sort), {}, multiple: true, class: 'form-control' %>
+			<%= form.select :coverage_waveband, options_for_select(@coverage_wavebands.map { |cw| [cw.strip] }), {}, multiple: true, class: 'form-control' %>
 		</div>
 		<div class='form-group'>
 			<%= form.label :data %><br />

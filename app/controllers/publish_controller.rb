@@ -5,9 +5,9 @@ require 'fileutils'
 class PublishController < ApplicationController
   def metadata
     if request.get?
-      @types = File.readlines('vocabulary/meta_types.txt')
-      @coverage_wavebands = File.readlines('vocabulary/meta_coverage_wavebands.txt')
-      @subjects = File.readlines('vocabulary/meta_subjects.txt')
+      @types = File.readlines('vocabulary/meta_types.txt').sort!
+      @coverage_wavebands = File.readlines('vocabulary/meta_coverage_wavebands.txt').sort!
+      @subjects = File.readlines('vocabulary/meta_subjects.txt').sort!
     end
 
     if request.post?
@@ -59,19 +59,16 @@ class PublishController < ApplicationController
     if request.get?
       @data_product = DataProduct.find(params[:id])
 
-      # Leyendo y parseando el contenido del archivo FITS
+      @types = File.readlines('vocabulary/column_types.txt').sort!
 
       result = `python fits_parser_2.py #{File.join(@data_product.resource_directory, @data_product.filename)}`
 
       fits = JSON.parse(result)
 
-      #0..(fits['hdu'].length - 1)
-      #fits['hdu'].first['content']
-
       @hdu_indexes = []
       @columns = []
-      @units = ['No unit']
-      @ucds = ['No UCD']
+      @units = []
+      @ucds = []
 
       fits['content'].each { |hdu|
         @hdu_indexes.push(hdu['index'])
@@ -84,22 +81,29 @@ class PublishController < ApplicationController
           @units.concat(hdu['units'])
         end
 
-        if hdu['columns']
-          @ucds.concat(hdu['columns'])
+        if hdu['header']
+          @ucds.concat(hdu['header'])
         end
       }
 
       @hdu_indexes.uniq!
+      @hdu_indexes.sort!
+
       @columns.uniq!
+      @columns.sort!
+
       @units.uniq!
+      @units.sort!
+      
       @ucds.uniq!
+      @ucds.sort!
     end
 
     if request.post?
       data_product = DataProduct.find(params[:id])
 
       params[:hdu_index].each_with_index { |val, index|
-        data_product.fits_columns.create(hdu_index: params[:hdu_index][index], identifier: params[:identifier][index], name: params[:name][index], description: params[:description][index], type_alt: params[:type_alt][index], verb_level: params[:verb_level][index], unit: params[:unit][index], ucds: 'ucds', required: params[:required][index])
+        data_product.fits_columns.create(hdu_index: params[:hdu_index][index], identifier: params[:identifier][index], name: params[:name][index], description: params[:description][index], type_alt: params[:type_alt][index], verb_level: params[:verb_level][index], unit: params[:unit][index], ucds: params[:ucds][index], required: params[:required][index])
       }
 
       redirect_to action: 'end'
@@ -155,31 +159,63 @@ class PublishController < ApplicationController
             xml.meta('name' => 'facility') { xml.text("#{data_product.metadatum.facility}") }
             xml.meta('name' => 'instrument') { xml.text("#{data_product.metadatum.instrument}") }
 
-            xml.meta('name' => 'coverage') do
-              data_product.metadatum.coverage_waveband.split(';').map(&:strip).each do |waveband|
-                xml.meta('name' => 'waveband') { xml.text("#{waveband}") }
-              end
+            coverage_wavebands = data_product.metadatum.coverage_waveband.split(';')
+
+            if coverage_wavebands.length == 1
+              xml.meta('name' => 'coverage.waveband') { xml.text("#{coverage_wavebands.first}") }
+            else
+              xml.meta('name' => 'coverage') do
+                data_product.metadatum.coverage_waveband.split(';').map(&:strip).each do |waveband|
+                  xml.meta('name' => 'waveband') { xml.text("#{waveband}") }
+                end
+              end       
             end
 
             # Table
 
-            xml.table('id' => 'main', 'onDisk' => 'True', 'adql' => 'True') do
+            # Verificamos si se encuentra RA y DEC dentro de las columnas, si estan entonces usamos el mixin SCS
+
+            ra_presence = false
+            dec_presence = false
+
+            data_product.fits_columns.each do |col|
+              ra_presence = true if col.ucds == 'pos.eq.ra;meta.main'
+              dec_presence = true if col.ucds == 'pos.eq.dec;meta.main'
+            end
+
+            if ra_presence and dec_presence
+              table_att = {'id' => 'main', 'onDisk' => 'True', 'adql' => 'True', 'mixin' => '//scs#q3cindex'}
+            else
+              table_att = {'id' => 'main', 'onDisk' => 'True', 'adql' => 'True'}
+            end
+
+            # Asumimos que solamente se agregan columnas de un solo HDU, en caso de que se quieran publicar columnas de diferentes HDUs (que problablemente tienen diferente cantidad de filas) es necesario definir mas de una tabla y hacer mas de un import
+
+            xml.table(table_att) do
               data_product.fits_columns.each do |col|
-                xml.column('name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'ucd' => "#{col.ucds}", 'unit' => "#{col.unit}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}")
+                if not col.ucds.blank? and not col.unit.blank? 
+                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'ucd' => "#{col.ucds}", 'unit' => "#{col.unit}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
+                else
+                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
+                end
+
+                xml.column(column_att)
               end
             end
 
             xml.data('id' => 'import') do
-              xml.make('table' => 'main')
+              xml.sources { xml.text("#{data_product.filename}") }
 
-              xml.sources('name' => 'name') do
-                xml.pattern { xml.text("#{data_product.metadatum.coverage_waveband}") }
+              xml.fitsTableGrammar('hdu' => "main")
+
+              xml.make('table' => 'main') do
+                xml.rowmaker do
+                  data_product.fits_columns.each do |col|
+                    xml.map('dest' => "#{col.name}") { xml.text("@#{col.identifier}") }
+                  end
+                end
               end
             end
-
-            xml.dbCore
-
-            xml.service
           end
         end
 
@@ -189,6 +225,7 @@ class PublishController < ApplicationController
 
         redirect_to root_path
       rescue StandardError => error
+        puts(error)
         redirect_to publish_generate_rd_path, flash: { error: 'An error ocurred during this proccess...' }
       end
     end

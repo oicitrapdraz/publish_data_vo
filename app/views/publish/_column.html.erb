@@ -4,7 +4,7 @@
 
 		<div class='form-group'>
 			<%= label_tag :hdu_index, 'HDU index' %><br />
-			<%= select_tag 'hdu_index[]', options_for_select(@hdu_indexes), class: 'form-control' %>
+			<%= select_tag 'hdu_index[]', options_for_select(@hdu_indexes, 0), class: 'form-control' %>
 		</div>
 		<div class='form-group'>
 			<%= label_tag :identifier %><br />
@@ -20,7 +20,7 @@
 		</div>
 		<div class='form-group'>
 			<%= label_tag :type %><br />
-			<%= select_tag 'type_alt[]', options_for_select(['Text', 'Char', 'Real', 'Double', 'Integer', 'Bigint', 'Smallint', 'Timestamp', 'Date', 'Time', 'Box', 'Spoint', 'Scircle', 'Sbox', 'Spoly']), class: 'form-control' %>
+			<%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }), class: 'form-control' %>
 		</div>
 		<div class='form-group'>
 			<%= label_tag :verb_level %><br />
@@ -28,7 +28,11 @@
 		</div>
 		<div class='form-group'>
 			<%= label_tag :unit %><br />
-			<%= select_tag 'unit[]', options_for_select(@units), class: 'form-control', placeholder: 'The physical unit for this column' %>
+			<%= select_tag 'unit[]', options_for_select(@units), {include_blank: 'None', class: 'form-control'} %>
+		</div>
+		<div class='form-group'>
+			<%= label_tag :UCD %><br />
+			<%= select_tag 'ucds[]', options_for_select(@ucds), {include_blank: 'None', class: 'form-control'} %>
 		</div>
 		<div class='form-group'>
 			<%= label_tag :required, 'Is this column required?' %><br />

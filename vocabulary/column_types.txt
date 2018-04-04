@@ -1,0 +1,15 @@
+text
+char
+real
+double precision
+integer
+bigint
+smallint
+timestamp
+date
+time
+box
+spoint
+scircle
+sbox
+spoly

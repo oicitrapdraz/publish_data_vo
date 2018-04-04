@@ -21,14 +21,14 @@ if __name__ == '__main__':
 
         duplicates = list_duplicates(raw_keys)
 
-        keys = [key for key in raw_keys if key not in duplicates]
+        keys = [key for key in raw_keys if bool(key.strip()) and key not in duplicates]
 
         header = []
 
         if i != 0:
             columns = hdulist[i].columns.names
 
-            units = set(hdulist[5].columns.units)
+            units = set(hdulist[i].columns.units)
             units.discard('')
 
         for key in keys:
