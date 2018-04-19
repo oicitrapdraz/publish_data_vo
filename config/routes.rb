@@ -19,6 +19,8 @@ Rails.application.routes.draw do
 
   get 'publish/final_check'
 
+  post 'publish/imp_q'
+
   get 'data_product/show'
 
   post 'data_product/accept'

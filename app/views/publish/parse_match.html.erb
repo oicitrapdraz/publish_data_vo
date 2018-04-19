@@ -1,32 +1,87 @@
-<% flash.each do |key, value| %>
-  <%= content_tag :div, value, class: 'alert alert-danger' %>
-<% end %>
+<p class="text-center">Para que se pueda usar el protocolo SCS a los datos subidos es necesario que al menos se seleccionen tres columnas, dos con los datos de las posiciones, es decir, RA (con UCD pos.eq.ra;meta.main), DEC (con UCD pos.eq.dec;meta.main) y otra columna que actue como un identificador (con UCD meta.id;meta.main)</p>
+
+<br />
 
 <div class='col-xs-8 col-xs-offset-2'>
-	<%= form_with url: publish_parse_match_path, method: :post do |form| %>
+  <%= form_with url: publish_parse_match_path, method: :post do |form| %>
 
-		<%= hidden_field_tag 'id', "#{@data_product.id}" %>
+    <%= hidden_field_tag 'id', "#{@data_product.id}" %>
 
-		<div id='column_set'>
-			<%= render partial: "column" %>
-		</div>
+    <%= hidden_field_tag 'hdu_index', id: 'hdu_index' %>
 
-		<a href="javascript:;" id="addNewColumn">Add New Column</a>
+    <div id='column_set'>
+      <p><h3>Column</h3></p>
 
-		<div class='actions'>
-			<br /><%= form.submit %>
-		</div>
-	<% end %>
+      <div class='form-group'>
+        <%= label_tag :identifier %><br />
+        <%= select_tag 'identifier[]', options_for_select(@columns), { id: "identifier-1", onchange: "identifier_selected(this.id)", class: "form-control" } %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :name %><br />
+        <%= text_field_tag 'name[]', nil, class: 'form-control', placeholder: 'A name for this column' %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :description %><br />
+        <%= text_field_tag 'description[]', nil, class: 'form-control', placeholder: 'A description for this column' %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :type %><br />
+        <%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }), { id: "type_alt-1", class: "form-control" } %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :verb_level %><br />
+        <%= select_tag 'verb_level[]', options_for_select(1..30), class: 'form-control' %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :unit %><br />
+        <%= select_tag 'unit[]', options_for_select(@units), { id: "unit-1", class: "form-control" } %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :UCDs, 'UCDs' %><br />
+        <%= select_tag 'ucds[]', options_for_select(@ucds), { id: "ucds-1", class: "form-control" } %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :required, 'Is this column required?' %><br />
+        <%= select_tag 'required[]', options_for_select(['Yes', 'No']), class: 'form-control' %>
+      </div>
 
-	<div class="hide" id="new_column_form">
-	  <%= render partial: "column", locals: {skill: false} %>
-	</div>
+      <hr />
+    </div>
+
+    <a href="javascript:;" id="addNewColumn">Add New Column</a>
+
+    <div class='actions'>
+      <br /><%= form.submit %>
+    </div>
+  <% end %>
+
+  <div class="hide" id="new_column_form">
+    <%= render partial: "column", locals: { skill: false } %>
+  </div>
 </div>
 
 <script type="text/javascript">
-$(document).ready(function(){
-  $("#addNewColumn").click(function(){
-    $("#column_set").append($("#new_column_form").html());
-  });
-});
+
+  $(document).ready(function() {
+    var columns_number = 2
+
+    var columns = <%= raw @columns.to_json %>
+    var raw_units = <%= raw @raw_units.to_json %>
+    var raw_ucds = <%= raw @raw_ucds.to_json %>
+
+    $("#addNewColumn").click(function() {
+      $("#column_set").append($("#new_column_form").html())
+
+      document.getElementById("identifier-tmp").setAttribute("id", "identifier-" + columns_number.toString())
+      document.getElementById("type_alt-tmp").setAttribute("id", "type_alt-" + columns_number.toString())
+      document.getElementById("unit-tmp").setAttribute("id", "unit-" + columns_number.toString())
+      document.getElementById("ucds-tmp").setAttribute("id", "ucds-" + columns_number.toString())
+
+      columns_number++
+    })
+  })
+
+  function identifier_selected(id) {
+    console.log(id)
+  }
 </script>

@@ -6,6 +6,7 @@ class CreateDataProducts < ActiveRecord::Migration[5.1]
       t.string :resource_directory
       t.string :filename
       t.string :format
+      t.integer :hdu_index
 
       t.timestamps
     end

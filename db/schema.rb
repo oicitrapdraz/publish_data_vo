@@ -38,13 +38,13 @@ ActiveRecord::Schema.define(version: 20180213041325) do
     t.string "resource_directory"
     t.string "filename"
     t.string "format"
+    t.integer "hdu_index"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "fits_columns", force: :cascade do |t|
     t.bigint "data_product_id"
-    t.integer "hdu_index"
     t.string "identifier"
     t.string "name"
     t.string "description"

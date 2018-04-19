@@ -37,7 +37,7 @@ class PublishController < ApplicationController
 
         raw_data_format = uploaded_data.original_filename.split('.').last
 
-        data_product = DataProduct.create(status: 0, schema: schema, resource_directory: resource_directory, filename: File.join('data', uploaded_data.original_filename), format: raw_data_format)
+        data_product = DataProduct.create(status: 0, schema: schema, resource_directory: resource_directory, filename: File.join('data', uploaded_data.original_filename), format: raw_data_format, hdu_index: params[:hdu_index])
 
         subjects = metadatum_params[:subjects].reject { |s| s.empty? }.join(';')
 
@@ -48,7 +48,7 @@ class PublishController < ApplicationController
         redirect_to action: 'parse_match', id: data_product.id
       rescue StandardError => error
         puts(error)
-        redirect_to publish_metadata_path, flash: { error: 'An error ocurred... Please be sure to fill in all the fields' }
+        redirect_to publish_metadata_path, flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
 
         FileUtils.rm_r(resource_directory) if File.exists?(resource_directory)
       end
@@ -61,49 +61,23 @@ class PublishController < ApplicationController
 
       @types = File.readlines('vocabulary/column_types.txt').sort!
 
-      result = `python fits_parser_2.py #{File.join(@data_product.resource_directory, @data_product.filename)}`
-
+      result = `python fits_parser_3.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
       fits = JSON.parse(result)
 
-      @hdu_indexes = []
-      @columns = []
-      @units = []
-      @ucds = [['ID', 'meta.id;meta.main']]
+      @columns = fits['columns']
 
-      fits['content'].each { |hdu|
-        @hdu_indexes.push(hdu['index'])
-        
-        if hdu['columns']
-          @columns.concat(hdu['columns'])
-        end
+      @raw_units = fits['units']
+      @raw_ucds = fits['ucds']
 
-        if hdu['units']
-          @units.concat(hdu['units'])
-        end
-
-        if hdu['header']
-          @ucds.concat(hdu['header'])
-        end
-      }
-
-      @hdu_indexes.uniq!
-      @hdu_indexes.sort!
-
-      @columns.uniq!
-      @columns.sort!
-
-      @units.uniq!
-      @units.sort!
-      
-      @ucds.uniq!
-      @ucds.sort!
+      @units = fits['units'].uniq.sort
+      @ucds = fits['ucds'].uniq.sort
     end
 
     if request.post?
       data_product = DataProduct.find(params[:id])
 
-      params[:hdu_index].each_with_index { |val, index|
-        data_product.fits_columns.create(hdu_index: params[:hdu_index][index], identifier: params[:identifier][index], name: params[:name][index], description: params[:description][index], type_alt: params[:type_alt][index], verb_level: params[:verb_level][index], unit: params[:unit][index], ucds: params[:ucds][index], required: params[:required][index])
+      params[:identifier].each_with_index { |val, index|
+        data_product.fits_columns.create(identifier: params[:identifier][index], name: params[:name][index], description: params[:description][index], type_alt: params[:type_alt][index], verb_level: params[:verb_level][index], unit: params[:unit][index], ucds: params[:ucds][index], required: params[:required][index])
       }
 
       redirect_to action: 'end'
@@ -210,7 +184,7 @@ class PublishController < ApplicationController
             xml.data('id' => 'import') do
               xml.sources { xml.text("#{data_product.filename}") }
 
-              xml.fitsTableGrammar('hdu' => "#{data_product.fits_columns.first.hdu_index}")
+              xml.fitsTableGrammar('hdu' => "#{data_product.hdu_index}")
 
               xml.make('table' => 'main') do
                 xml.rowmaker do
@@ -247,15 +221,23 @@ class PublishController < ApplicationController
         
         file.close
 
-        redirect_to root_path
+        redirect_to publish_generate_rd_path, flash: { notice: 'Successfully generated the resource descriptor...' }
       rescue StandardError => error
         puts(error)
-        redirect_to publish_generate_rd_path, flash: { error: 'An error ocurred during this proccess...' }
+        redirect_to publish_generate_rd_path, flash: { alert: 'An error ocurred during this proccess...' }
       end
     end
   end
 
   def final_check
+  end
+
+  def imp_q
+    data_product = DataProduct.find(params[:id])
+
+    result = `gavo --debug imp #{data_product.metadatum.title.split(' ').first.downcase}/q.rd`
+
+    redirect_to publish_generate_rd_path, flash: { notice: "#{result}" }
   end
 
   private
