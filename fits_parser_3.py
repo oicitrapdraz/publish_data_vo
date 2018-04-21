@@ -13,7 +13,7 @@ if __name__ == '__main__':
 	ucds = []
 
 	for j in range(len(columns)):
-		ucd_key = "TBUCD{}".format(j)
+		ucd_key = "TBUCD{}".format(j + 1)
 
 		if (ucd_key in hdulist[hdu_index].header):
 			ucds.append(hdulist[hdu_index].header[ucd_key])

@@ -8,6 +8,7 @@
 <p><strong>Resource directory</strong>: <%= @data_product.resource_directory %></p>
 <p><strong>Filename</strong>: <%= @data_product.filename %></p>
 <p><strong>Format</strong>: <%= @data_product.format %></p>
+<p><strong>HDU Index</strong>: <%= @data_product.hdu_index %></p>
 
 <hr />
 
@@ -27,9 +28,8 @@
 <h2>Columns</h2>
 
 <% @data_product.fits_columns.each do |col| %>
-	<h4><%= col.name %> (<%= col.identifier %>)</h4>
+	<h4><strong><%= col.name %></strong> (<small><%= col.identifier %> in FITS</small>)</h4>
 	
-	<p><strong>HDU</strong>: <%= col.hdu_index %></p>
 	<p><strong>Description</strong>: <%=  col.description %></p>
 	<p><strong>Type</strong>: <%=  col.type_alt %></p>
 	<p><strong>Verb</strong>: <%=  col.verb_level %></p>

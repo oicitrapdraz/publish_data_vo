@@ -1,6 +1,6 @@
 class DataProduct < ApplicationRecord
-	has_one :metadatum
-	has_many :fits_columns
+	has_one :metadatum, dependent: :delete
+	has_many :fits_columns, dependent: :delete_all
 
 	validates :status, presence: true
 	validates :schema, presence: true

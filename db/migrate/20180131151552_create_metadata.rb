@@ -6,6 +6,7 @@ class CreateMetadata < ActiveRecord::Migration[5.1]
       t.text :description
       t.string :creators
       t.string :subjects
+      t.string :source
       t.string :instrument
       t.string :facility
       t.string :type_alt

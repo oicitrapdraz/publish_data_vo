@@ -9,6 +9,8 @@
       <th scope="col">Format</th>
       <th scope="col"></th>
       <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -20,6 +22,8 @@
       <td><%= data_product.resource_directory %></td>
       <td><%= data_product.filename %></td>
       <td><%= data_product.format %></td>
+      <td><%= link_to 'Edit Metadata', data_product_edit_metadata_path(id: data_product.id) %></td>
+      <td><%= link_to 'Edit Metadata', data_product_edit_metadata_path(id: data_product.id) %></td>
       <td><%= link_to 'Show', data_product_show_path(id: data_product.id) %></td>
       <td><%= link_to 'Accept', data_product_accept_path(id: data_product.id), method: :post %></td>
     </tr>

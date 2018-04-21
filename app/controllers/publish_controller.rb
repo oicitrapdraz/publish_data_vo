@@ -3,6 +3,8 @@ require 'nokogiri'
 require 'fileutils'
 
 class PublishController < ApplicationController
+  before_action :authenticate_admin!, only: [:first_check, :accepted, :generate_rd, :final_check, :imp_q]
+
   def metadata
     if request.get?
       @types = File.readlines('vocabulary/meta_types.txt').sort!
@@ -59,12 +61,12 @@ class PublishController < ApplicationController
     if request.get?
       @data_product = DataProduct.find(params[:id])
 
-      @types = File.readlines('vocabulary/column_types.txt').sort!
+      @types = File.readlines('vocabulary/column_types.txt')
 
       result = `python fits_parser_3.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
       fits = JSON.parse(result)
 
-      @columns = fits['columns']
+      @columns = fits['columns'].insert(0, '')
 
       @raw_units = fits['units']
       @raw_ucds = fits['ucds']
@@ -229,9 +231,6 @@ class PublishController < ApplicationController
     end
   end
 
-  def final_check
-  end
-
   def imp_q
     data_product = DataProduct.find(params[:id])
 
@@ -243,6 +242,6 @@ class PublishController < ApplicationController
   private
 
     def metadatum_params
-      params.permit(:title, :description, :creators, :instrument, :facility, :type_alt, subjects: [], coverage_waveband: [])
+      params.permit(:title, :description, :creators, :instrument, :facility, :type_alt, :source, subjects: [], coverage_waveband: [])
     end
 end

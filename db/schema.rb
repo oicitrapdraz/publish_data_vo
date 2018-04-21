@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 20180213041325) do
     t.text "description"
     t.string "creators"
     t.string "subjects"
+    t.string "source"
     t.string "instrument"
     t.string "facility"
     t.string "type_alt"
