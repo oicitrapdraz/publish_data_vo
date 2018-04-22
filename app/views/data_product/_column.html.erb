@@ -6,7 +6,7 @@
 </div>
 <div class='form-group'>
 	<%= label_tag :name %><br />
-	<%= text_field_tag 'name[]', nil, class: 'form-control', placeholder: 'A name for this column' %>
+	<%= text_field_tag 'name[]', nil,  id: "name-tmp", class: 'form-control', placeholder: 'A name for this column' %>
 </div>
 <div class='form-group'>
 	<%= label_tag :description %><br />
@@ -21,11 +21,11 @@
 	<%= select_tag 'verb_level[]', options_for_select(1..30), class: 'form-control' %>
 </div>
 <div class='form-group'>
-	<%= label_tag :unit %><br />
+	<%= label_tag :unit %> <a id="manual_unit-tmp" href="#" onclick="replace_manual_unit(this.id);return false;">(or manually write the unit)</a> <br />
 	<%= select_tag 'unit[]', options_for_select(@units), { id: "unit-tmp", class: "form-control" } %>
 </div>
 <div class='form-group'>
-	<%= label_tag :UCDs, 'UCDs' %><br />
+  <%= label_tag :UCDs, 'UCDs' %> <a id="manual_ucd-tmp" href="#" onclick="replace_manual_ucd(this.id);return false;">(or manually write the UCDs)</a> <br />
 	<%= select_tag 'ucds[]', options_for_select(@ucds), { id: "ucds-tmp", class: "form-control" } %>
 </div>
 <div class='form-group'>

@@ -42,7 +42,6 @@ class PublishController < ApplicationController
 
         redirect_to action: 'metadata', id: data_product.id
       rescue StandardError => error
-        puts(error)
         redirect_to publish_create_publish_request_path, flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
 
         FileUtils.rm_r(resource_directory) if File.exists?(resource_directory)
@@ -73,7 +72,6 @@ class PublishController < ApplicationController
 
         redirect_to action: 'parse_match', id: @data_product.id
       rescue StandardError => error
-        puts(error)
         redirect_to publish_metadata_path(id: @data_product_id.id), flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
       end
     end
@@ -85,7 +83,7 @@ class PublishController < ApplicationController
 
       @types = File.readlines('vocabulary/column_types.txt')
 
-      result = `python fits_parser_3.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
+      result = `python fits_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
       
       fits = JSON.parse(result)
 
@@ -94,7 +92,7 @@ class PublishController < ApplicationController
       @raw_units = fits['units']
       @raw_ucds = fits['ucds']
 
-      @units = fits['units'].uniq.sort
+      @units = fits['units'].uniq.sort  
       @ucds = fits['ucds'].uniq.sort
     end
 

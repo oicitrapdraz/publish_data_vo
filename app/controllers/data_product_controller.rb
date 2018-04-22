@@ -23,7 +23,7 @@ class DataProductController < ApplicationController
 	def edit_columns
 		@types = File.readlines('vocabulary/column_types.txt')
 
-		result = `python fits_parser_3.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
+		result = `python fits_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
 
 		fits = JSON.parse(result)
 
@@ -32,7 +32,7 @@ class DataProductController < ApplicationController
 		@raw_units = fits['units']
 		@raw_ucds = fits['ucds']
 
-		@units = fits['units'].uniq.sort
+		@units = fits['units'].uniq.sort  
 		@ucds = fits['ucds'].uniq.sort
 	end
 
@@ -61,7 +61,6 @@ class DataProductController < ApplicationController
 		
 				redirect_to data_product_show_path(id: data_product.id), notice: 'Se actualizaron los datos'
       rescue StandardError => error
-        puts(error)
         redirect_to publish_metadata_path, flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
 
         FileUtils.rm_r(resource_directory) if File.exists?(resource_directory)
@@ -83,9 +82,7 @@ class DataProductController < ApplicationController
 		params[:fits_column_id].each_with_index { |val, index|
 
 			col = FitsColumn.find(val)
-
-			puts(col)
-
+			
 			col.update_attributes(identifier: params[:identifier][index], name: params[:name][index], description: params[:description][index], type_alt: params[:type_alt][index], verb_level: params[:verb_level][index], unit: params[:unit][index], ucds: params[:ucds][index], required: params[:required][index])
 		}
 

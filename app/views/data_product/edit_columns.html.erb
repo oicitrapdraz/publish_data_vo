@@ -34,11 +34,11 @@
         <%= select_tag 'verb_level[]', options_for_select(1..30, col.verb_level), class: 'form-control' %>
       </div>
       <div class='form-group'>
-        <%= label_tag :unit %><br />
+        <%= label_tag :unit %> <a id=<%= "manual_unit-#{index + 1}" %> href="#" onclick="replace_manual_unit(this.id);return false;">(or manually write the unit)</a> <br />
         <%= select_tag 'unit[]', options_for_select(@units, col.unit), { id: "unit-#{index + 1}", class: "form-control" } %>
       </div>
       <div class='form-group'>
-        <%= label_tag :UCDs, 'UCDs' %><br />
+        <%= label_tag :UCDs, 'UCDs' %> <a id=<%= "manual_ucd-#{index + 1}" %> href="#" onclick="replace_manual_ucd(this.id);return false;">(or manually write the UCDs)</a> <br />
         <%= select_tag 'ucds[]', options_for_select(@ucds, col.ucds), { id: "ucds-#{index + 1}", class: "form-control" } %>
       </div>
       <div class='form-group'>
@@ -66,8 +66,12 @@
   	var columns_quantity = <%= @data_product.fits_columns.length %>
 
     columns = <%= raw @columns.to_json %>
+
     raw_units = <%= raw @raw_units.to_json %>
     raw_ucds = <%= raw @raw_ucds.to_json %>
+
+    col_units = <%= raw @data_product.fits_columns.pluck(:unit) %>
+    col_ucds = <%= raw @data_product.fits_columns.pluck(:ucds) %>
 
     unit_html = document.getElementById("unit-tmp").outerHTML
     ucds_html = document.getElementById("ucds-tmp").outerHTML
@@ -82,19 +86,35 @@
     var column_index = parseInt(column[column.length - 1])
     var selected_index = document.getElementById(id).selectedIndex
 
-    if (raw_units[selected_index - 1]) {
+    if (raw_units[selected_index - 1] && raw_units.indexOf(col_units[column_index - 1]) > -1 ) {
       $(`#unit-${column_index}`).replaceWith(unit_html.replace('unit-tmp', `unit-${column_index}`))
 
       document.getElementById(`unit-${column_index}`).value = raw_units[selected_index - 1]
     } else
-      $(`#unit-${column_index}`).replaceWith(`<input type='text' name='unit[]'' id='unit-${column_index}' class='form-control' placeholder='This column doest have an associated unit, write it or leave it blank' />`)
+      $(`#unit-${column_index}`).replaceWith(`<input type='text' name='unit[]'' id='unit-${column_index}' value='${col_units[column_index - 1]}' class='form-control' />`)
 
-    if (raw_ucds[selected_index - 1]) {
+    if (raw_ucds[selected_index - 1] && raw_ucds.indexOf(col_ucds[column_index - 1]) > -1 ) {
       $(`#ucds-${column_index}`).replaceWith(ucds_html.replace('ucds-tmp', `ucds-${column_index}`))
 
       document.getElementById(`ucds-${column_index}`).value = raw_ucds[selected_index - 1]
     }
     else
-      $(`#ucds-${column_index}`).replaceWith(`<input type='text' name='ucds[]'' id='ucds-${column_index}' class='form-control' placeholder='This column doest have an associated UCD, write it or leave it blank' />`)
+      $(`#ucds-${column_index}`).replaceWith(`<input type='text' name='ucds[]'' id='ucds-${column_index}' value='${col_ucds[column_index - 1]}' class='form-control' />`)
+  }
+
+  function replace_manual_unit(id) {
+    var column = id.split("-")
+
+    var column_index = parseInt(column[column.length - 1])
+
+    $(`#unit-${column_index}`).replaceWith(`<input type='text' name='unit[]'' id='unit-${column_index}' class='form-control' />`)
+  }
+
+  function replace_manual_ucd(id) {
+    var column = id.split("-")
+
+    var column_index = parseInt(column[column.length - 1])
+
+    $(`#ucds-${column_index}`).replaceWith(`<input type='text' name='ucds[]'' id='ucds-${column_index}' class='form-control' />`)
   }
 </script>

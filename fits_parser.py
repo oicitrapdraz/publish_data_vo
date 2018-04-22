@@ -4,22 +4,25 @@ import json
 from astropy.io import fits
 
 if __name__ == '__main__':
-    hdulist = fits.open(sys.argv[1])
+	hdulist = fits.open(sys.argv[1])
+	hdu_index = int(sys.argv[2])
 
-    hdu_list = []
+	columns = hdulist[hdu_index].columns.names
+	units = hdulist[hdu_index].columns.units
 
-    for i in range(len(hdulist)):
-        keys = set(list(hdulist[i].header.keys()))
+	ucds = []
 
-        hd = []
+	for j in range(len(columns)):
+		ucd_key = "TBUCD{}".format(j + 1)
+		ucd_key_2 = "UCD__{}".format(j + 1)
 
-        for key in keys:
-            val = hdulist[i].header[key]
-            if (isinstance(val, str) and '\n' not in val):
-                hd.append(['{}: {}'.format(key, val), val])
+		if (ucd_key in hdulist[hdu_index].header):
+			ucds.append(hdulist[hdu_index].header[ucd_key])
+		elif (ucd_key_2 in hdulist[hdu_index].header):
+			ucds.append(hdulist[hdu_index].header[ucd_key_2])
+		else:
+			ucds.append("")
 
-        hdu_list.append({'index': i, 'header': hd})
+	result = {'index': hdu_index, 'columns': list(columns), 'units': list(units), 'ucds': ucds}
 
-    result = {'hdu': hdu_list}
-
-    json.dump(result, sys.stdout)
+	json.dump(result, sys.stdout)

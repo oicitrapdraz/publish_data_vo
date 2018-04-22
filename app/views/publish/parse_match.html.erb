@@ -33,11 +33,11 @@
         <%= select_tag 'verb_level[]', options_for_select(1..30), class: 'form-control' %>
       </div>
       <div class='form-group'>
-        <%= label_tag :unit %><br />
+        <%= label_tag :unit %> <a id="manual_unit-1" href="#" onclick="replace_manual_unit(this.id);return false;">(or manually write the unit)</a> <br />
         <%= select_tag 'unit[]', options_for_select(@units), { id: "unit-1", class: "form-control" } %>
       </div>
       <div class='form-group'>
-        <%= label_tag :UCDs, 'UCDs' %><br />
+        <%= label_tag :UCDs, 'UCDs' %> <a id="manual_ucd-1" href="#" onclick="replace_manual_ucd(this.id);return false;">(or manually write the UCDs)</a> <br />
         <%= select_tag 'ucds[]', options_for_select(@ucds), { id: "ucds-1", class: "form-control" } %>
       </div>
       <div class='form-group'>
@@ -65,6 +65,7 @@
     var columns_number = 2
 
     columns = <%= raw @columns.to_json %>
+    
     raw_units = <%= raw @raw_units.to_json %>
     raw_ucds = <%= raw @raw_ucds.to_json %>
 
@@ -77,7 +78,9 @@
       document.getElementById("identifier-tmp").setAttribute("id", "identifier-" + columns_number.toString())
       document.getElementById("name-tmp").setAttribute("id", "name-" + columns_number.toString())
       document.getElementById("unit-tmp").setAttribute("id", "unit-" + columns_number.toString())
+      document.getElementById("manual_unit-tmp").setAttribute("id", "manual_unit-" + columns_number.toString())
       document.getElementById("ucds-tmp").setAttribute("id", "ucds-" + columns_number.toString())
+      document.getElementById("manual_ucd-tmp").setAttribute("id", "manual_ucd-" + columns_number.toString())
 
       columns_number++
     })
@@ -98,7 +101,7 @@
 
       document.getElementById(`unit-${column_index}`).value = raw_units[selected_index - 1]
     } else
-      $(`#unit-${column_index}`).replaceWith(`<input type='text' name='unit[]'' id='unit-${column_index}' class='form-control' placeholder='This column doest have an associated unit, write it or leave it blank' />`)
+      $(`#unit-${column_index}`).replaceWith(`<input type='text' name='unit[]'' id='unit-${column_index}' class='form-control' />`)
 
     if (raw_ucds[selected_index - 1]) {
       $(`#ucds-${column_index}`).replaceWith(ucds_html.replace('ucds-tmp', `ucds-${column_index}`))
@@ -106,6 +109,22 @@
       document.getElementById(`ucds-${column_index}`).value = raw_ucds[selected_index - 1]
     }
     else
-      $(`#ucds-${column_index}`).replaceWith(`<input type='text' name='ucds[]'' id='ucds-${column_index}' class='form-control' placeholder='This column doest have an associated UCD, write it or leave it blank' />`)
+      $(`#ucds-${column_index}`).replaceWith(`<input type='text' name='ucds[]'' id='ucds-${column_index}' class='form-control' />`)
+  }
+
+  function replace_manual_unit(id) {
+    var column = id.split("-")
+
+    var column_index = parseInt(column[column.length - 1])
+
+    $(`#unit-${column_index}`).replaceWith(`<input type='text' name='unit[]'' id='unit-${column_index}' class='form-control' />`)
+  }
+
+  function replace_manual_ucd(id) {
+    var column = id.split("-")
+
+    var column_index = parseInt(column[column.length - 1])
+
+    $(`#ucds-${column_index}`).replaceWith(`<input type='text' name='ucds[]'' id='ucds-${column_index}' class='form-control' />`)
   }
 </script>
