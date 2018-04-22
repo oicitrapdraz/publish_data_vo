@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   devise_for :admins
 
+  match 'publish/create_publish_request', via: [:get, :post]
   match 'publish/metadata', via: [:get, :post]
   get 'publish/parse_match/:id' => 'publish#parse_match'
   post 'publish/parse_match'

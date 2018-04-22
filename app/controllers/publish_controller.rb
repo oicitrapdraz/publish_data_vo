@@ -5,11 +5,8 @@ require 'fileutils'
 class PublishController < ApplicationController
   before_action :authenticate_admin!, only: [:first_check, :accepted, :generate_rd, :final_check, :imp_q]
 
-  def metadata
+  def create_publish_request
     if request.get?
-      @types = File.readlines('vocabulary/meta_types.txt').sort!
-      @coverage_wavebands = File.readlines('vocabulary/meta_coverage_wavebands.txt').sort!
-      @subjects = File.readlines('vocabulary/meta_subjects.txt').sort!
     end
 
     if request.post?
@@ -41,18 +38,43 @@ class PublishController < ApplicationController
 
         data_product = DataProduct.create(status: 0, schema: schema, resource_directory: resource_directory, filename: File.join('data', uploaded_data.original_filename), format: raw_data_format, hdu_index: params[:hdu_index])
 
+        data_product.metadatum = Metadatum.create(metadatum_params)
+
+        redirect_to action: 'metadata', id: data_product.id
+      rescue StandardError => error
+        puts(error)
+        redirect_to publish_create_publish_request_path, flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
+
+        FileUtils.rm_r(resource_directory) if File.exists?(resource_directory)
+      end
+    end
+  end
+
+  def metadata
+    if request.get?
+      @data_product = DataProduct.find(params[:id])
+
+      @types = File.readlines('vocabulary/meta_types.txt').sort!
+      @coverage_wavebands = File.readlines('vocabulary/meta_coverage_wavebands.txt').sort!
+      @subjects = File.readlines('vocabulary/meta_subjects.txt').sort!
+    end
+
+    if request.post?
+      begin
+        # Update data_product and associated metadata
+
+        @data_product = DataProduct.find(params[:data_product_id])
+
         subjects = metadatum_params[:subjects].reject { |s| s.empty? }.join(';')
 
         coverage_waveband = metadatum_params[:coverage_waveband].reject { |cw| cw.empty? }.join(';')
 
-        data_product.metadatum = Metadatum.create(metadatum_params.except(:coverage_waveband).except(:subjects).merge(coverage_waveband: coverage_waveband).merge(subjects: subjects))
+        @data_product.metadatum.update_attributes(metadatum_params.except(:coverage_waveband).except(:subjects).merge(coverage_waveband: coverage_waveband).merge(subjects: subjects))
 
-        redirect_to action: 'parse_match', id: data_product.id
+        redirect_to action: 'parse_match', id: @data_product.id
       rescue StandardError => error
         puts(error)
-        redirect_to publish_metadata_path, flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
-
-        FileUtils.rm_r(resource_directory) if File.exists?(resource_directory)
+        redirect_to publish_metadata_path(id: @data_product_id.id), flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
       end
     end
   end
@@ -64,6 +86,7 @@ class PublishController < ApplicationController
       @types = File.readlines('vocabulary/column_types.txt')
 
       result = `python fits_parser_3.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
+      
       fits = JSON.parse(result)
 
       @columns = fits['columns'].insert(0, '')
@@ -205,7 +228,7 @@ class PublishController < ApplicationController
 
             if ra_presence and dec_presence and id_prescence
               xml.service('id' => 'cone', 'defaultRenderer' => 'form', 'allowed' => 'scs.xml,form,static') do
-                xml.meta('name' => 'shortname') { xml.text("@#{data_product.metadatum.title.split(' ').first.downcase} cone") }
+                xml.meta('name' => 'shortname') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} cone") }
 
                 xml.scsCore('queriedTable' => 'main') do
                   xml.FEED('source' => '//scs#coreDescs')
@@ -225,7 +248,6 @@ class PublishController < ApplicationController
 
         redirect_to publish_generate_rd_path, flash: { notice: 'Successfully generated the resource descriptor...' }
       rescue StandardError => error
-        puts(error)
         redirect_to publish_generate_rd_path, flash: { alert: 'An error ocurred during this proccess...' }
       end
     end
