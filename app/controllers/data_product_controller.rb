@@ -23,7 +23,7 @@ class DataProductController < ApplicationController
 	def edit_columns
 		@types = File.readlines('vocabulary/column_types.txt')
 
-		result = `python fits_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
+		result = `python fits_column_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
 
 		fits = JSON.parse(result)
 

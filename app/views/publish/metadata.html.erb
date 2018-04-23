@@ -3,8 +3,8 @@
 		<%= hidden_field_tag 'data_product_id', @data_product.id %>
 
 		<div class='form-group'>
-			<%= form.label :creators %><br />
-			<%= form.text_field :creators, class: 'form-control', placeholder: 'If there\'s more than one, separate by semicolon' %>
+			<%= form.label :creators %> (<em>'If there's more than one, separate by semicolon</em>) <br />
+			<%= form.text_field :creators, value: @creators, class: 'form-control' %>
 		</div>
 		<div class='form-group'>
 			<%= form.label :source %><br />
@@ -16,11 +16,11 @@
 		</div>
 		<div class='form-group'>
 			<%= form.label :instrument %><br />
-			<%= form.text_field :instrument, class: 'form-control', placeholder: 'The instrument that produced the data' %>
+			<%= form.text_field :instrument, value: @instrument, class: 'form-control', placeholder: 'The instrument that produced the data' %>
 		</div>
 		<div class='form-group'>
 			<%= form.label :facility %><br />
-			<%= form.text_field :facility, class: 'form-control', placeholder: 'The facility at which the data was taken' %>
+			<%= form.text_field :facility, value: @facility, class: 'form-control', placeholder: 'The facility at which the data was taken' %>
 		</div>
 		<div class='form-group'>
 			<%= form.label :type %><br />

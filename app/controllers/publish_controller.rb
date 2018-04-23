@@ -53,6 +53,14 @@ class PublishController < ApplicationController
     if request.get?
       @data_product = DataProduct.find(params[:id])
 
+      result = `python fits_metadata_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
+      
+      metadata = JSON.parse(result)
+
+      @creators = metadata['creator']
+      @instrument = metadata['instrument']
+      @facility = metadata['facility']
+
       @types = File.readlines('vocabulary/meta_types.txt').sort!
       @coverage_wavebands = File.readlines('vocabulary/meta_coverage_wavebands.txt').sort!
       @subjects = File.readlines('vocabulary/meta_subjects.txt').sort!
@@ -72,6 +80,7 @@ class PublishController < ApplicationController
 
         redirect_to action: 'parse_match', id: @data_product.id
       rescue StandardError => error
+        puts(error)
         redirect_to publish_metadata_path(id: @data_product_id.id), flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
       end
     end
@@ -83,7 +92,7 @@ class PublishController < ApplicationController
 
       @types = File.readlines('vocabulary/column_types.txt')
 
-      result = `python fits_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
+      result = `python fits_column_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
       
       fits = JSON.parse(result)
 
@@ -121,7 +130,11 @@ class PublishController < ApplicationController
   def generate_rd
     if request.get?
 
-      # Cambiar status a 2 o 3
+      dachs_directory = File.read('dachs_directory')
+
+      if dachs_directory == '/var/gavo/inputs'
+        @can_publish = true
+      end
 
       @data_products = DataProduct.where(status: 1)
     end

@@ -9,7 +9,9 @@
       <th scope="col">Format</th>
       <th scope="col"></th>
       <th scope="col"></th>
+      <% if @can_publish %>
       <th scope="col"></th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -23,7 +25,9 @@
       <td><%= data_product.format %></td>
       <td><%= link_to 'Show', data_product_show_path(id: data_product.id) %></td>
       <td><%= link_to 'Generate resource descriptor', publish_generate_rd_path(id: data_product.id), method: :post %></td>
+      <% if @can_publish %>
       <td><%= link_to 'Publish to the VO', publish_imp_q_path(id: data_product.id), method: :post %></td>
+      <% end %>
     </tr>
     <% end %>
   </tbody>
