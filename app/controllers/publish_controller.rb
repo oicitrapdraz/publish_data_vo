@@ -232,14 +232,19 @@ class PublishController < ApplicationController
             end
 
             id_prescence = false
+            id_col_name = nil
 
             data_product.fits_columns.each do |col|
-              id_prescence = true if col.ucds == 'meta.id;meta.main'
+              if col.ucds == 'meta.id;meta.main'
+                id_prescence = true
+                id_col_name = col.name
+              end
             end
 
             if ra_presence and dec_presence and id_prescence
               xml.service('id' => 'cone', 'defaultRenderer' => 'form', 'allowed' => 'scs.xml,form,static') do
-                xml.meta('name' => 'shortname') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} cone") }
+                xml.meta('name' => 'title') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} SCS") }
+                xml.meta('name' => 'shortName') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase}c") }
 
                 xml.scsCore('queriedTable' => 'main') do
                   xml.FEED('source' => '//scs#coreDescs')
@@ -248,6 +253,32 @@ class PublishController < ApplicationController
                 xml.publish('render' => 'scs.xml', 'sets' => 'ivo_managed')
 
                 xml.outputTable('verbLevel' => '20')
+              end
+
+              xml.service('id' => 'get_data', 'defaultRenderer' => 'form', 'allowed' => 'form,static') do
+                xml.meta('name' => 'title') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} Get data") }
+                xml.meta('name' => 'shortName') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase}gd") }
+
+                xml.dbCore('queriedTable' => 'main') do
+                  xml.condDesc do
+                    xml.inputKey('original' => "#{id_col_name}", 'required' => 'True')
+                  end
+                end
+
+                xml.outputTable('verbLevel' => '30')
+              end
+            elsif id_prescence
+              xml.service('id' => 'get_data', 'defaultRenderer' => 'form', 'allowed' => 'form,static') do
+                xml.meta('name' => 'title') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} Get data") }
+                xml.meta('name' => 'shortName') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase}gd") }
+
+                xml.dbCore('queriedTable' => 'main') do
+                  xml.condDesc do
+                    xml.inputKey('original' => "#{id_col_name}", 'required' => 'True')
+                  end
+                end
+
+                xml.outputTable('verbLevel' => '30')
               end
             end
           end

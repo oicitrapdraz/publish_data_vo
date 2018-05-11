@@ -17,8 +17,7 @@
         <%= select_tag 'identifier[]', options_for_select(@columns), { id: "identifier-1", onchange: "identifier_selected(this.id)", class: "form-control" } %>
       </div>
       <div class='form-group'>
-        <%= label_tag :name %><br />
-        <%= text_field_tag 'name[]', nil, id: "name-1", class: 'form-control', placeholder: 'A name for this column' %>
+        <%= hidden_field_tag 'name[]', nil, id: "name-1", class: 'form-control', placeholder: 'A name for this column' %>
       </div>
       <div class='form-group'>
         <%= label_tag :description %><br />

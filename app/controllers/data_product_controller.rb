@@ -47,6 +47,8 @@ class DataProductController < ApplicationController
 
 				resource_directory = File.join(dachs_directory, schema)
 
+				File.delete(File.join(resource_directory, 'q.rd')) if File.exist?(File.join(resource_directory, 'q.rd'))
+
 				File.rename(data_product.resource_directory, resource_directory)
 
 				data_product.update_attributes(schema: schema, resource_directory: resource_directory)

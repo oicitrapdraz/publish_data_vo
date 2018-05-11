@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   root 'home#index'
 
+  get 'home/example'
+
   devise_for :admins
 
   match 'publish/create_publish_request', via: [:get, :post]

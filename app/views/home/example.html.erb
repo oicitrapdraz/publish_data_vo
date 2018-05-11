@@ -1,0 +1,175 @@
+<div class="row">
+	<div class="col-xs-4">
+		<h3 class="text-center">Tabla 1</h3>
+		<br />
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form>
+				  <div class="form-group">
+				    <label for="exampleInputEmail1">Nombre de la tabla</label>
+				    <input type="text" class="form-control" placeholder="Ingresar nombre">
+				  </div>
+				</form>
+
+				<hr />
+
+				<h3 class="text-center">Columnas</h3>
+
+				<div class="panel-group" id="accordion">
+					<div class="panel panel-default" style="margin-left: 10px; margin-right: 10px;">
+						<div class="panel-heading">
+							<h4 class="panel-title"><a data-toggle="collapse" data-target="#collapse_ra" href="#collapse_ra" class="collapsed" style="margin-left: 10px"><strong>RA</strong></a></h4>
+						</div>
+
+						<div id="collapse_ra" class="panel-collapse collapse">
+							<div class="panel-body">
+								
+							</div>
+						</div>
+					</div>
+
+					<div class="panel panel-default" style="margin-left: 10px; margin-right: 10px;">
+						<div class="panel-heading">
+							<h4 class="panel-title"><a data-toggle="collapse" data-target="#collapse_dec" href="#collapse_dec" class="collapsed" style="margin-left: 10px"><strong>DEC</strong></a></h4>
+						</div>
+
+						<div id="collapse_dec" class="panel-collapse collapse">
+							<div id="btc_panel" class="panel-body">
+								
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="text-center">
+					<button type="button" class="btn text-center">Agregar columna</button>
+				</div>
+
+				<hr />
+
+				<h3 class="text-center">Servicios/protocolos</h3>
+
+				<div>
+					<button type="button" class="btn text-center">SCS <span class="glyphicon glyphicon-remove-circle"></span></button>
+				</div>
+
+				<br />
+
+				<div class="text-center">
+					<button type="button" class="btn text-center">Agregar servicio/protocolo</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xs-4">
+		<h3 class="text-center">Tabla 2</h3>
+		<br />
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form>
+				  <div class="form-group">
+				    <label for="exampleInputEmail1">Nombre de la tabla</label>
+				    <input type="text" class="form-control" placeholder="Ingresar nombre">
+				  </div>
+				</form>
+
+				<hr />
+
+				<h3 class="text-center">Columnas</h3>
+
+				<div class="panel-group" id="accordion">
+					<div class="panel panel-default" style="margin-left: 10px; margin-right: 10px;">
+						<div class="panel-heading">
+							<h4 class="panel-title"><a data-toggle="collapse" data-target="#collapse_glat" href="#collapse_glat" class="collapsed" style="margin-left: 10px"><strong>GLAT</strong></a></h4>
+						</div>
+
+						<div id="collapse_glat" class="panel-collapse collapse">
+							<div id="btc_panel" class="panel-body">
+								
+							</div>
+						</div>
+					</div>
+
+					<div class="panel panel-default" style="margin-left: 10px; margin-right: 10px;">
+						<div class="panel-heading">
+							<h4 class="panel-title"><a data-toggle="collapse" data-target="#collapse_glon" href="#collapse_glon" class="collapsed" style="margin-left: 10px"><strong>GLON</strong></a></h4>
+						</div>
+
+						<div id="collapse_glon" class="panel-collapse collapse">
+							<div id="btc_panel" class="panel-body">
+
+
+					    <div id='column_set'>
+					      <p><h3>Column</h3></p>
+
+					      <div class='form-group'>
+					        <%= label_tag :identifier %><br />
+					        <%= select_tag 'identifier[]', options_for_select(@columns), { id: "identifier-1", onchange: "identifier_selected(this.id)", class: "form-control" } %>
+					      </div>
+					      <div class='form-group'>
+					        <%= hidden_field_tag 'name[]', nil, id: "name-1", class: 'form-control', placeholder: 'A name for this column' %>
+					      </div>
+					      <div class='form-group'>
+					        <%= label_tag :description %><br />
+					        <%= text_field_tag 'description[]', nil, class: 'form-control', placeholder: 'A description for this column' %>
+					      </div>
+					      <div class='form-group'>
+					        <%= label_tag :type %><br />
+					        <%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }), class: "form-control" %>
+					      </div>
+					      <div class='form-group'>
+					        <%= label_tag :verb_level %><br />
+					        <%= select_tag 'verb_level[]', options_for_select(1..30), class: 'form-control' %>
+					      </div>
+					      <div class='form-group'>
+					        <%= label_tag :unit %> <a id="manual_unit-1" href="#" onclick="replace_manual_unit(this.id);return false;">(or manually write the unit)</a> <br />
+					        <%= select_tag 'unit[]', options_for_select(@units), { id: "unit-1", class: "form-control" } %>
+					      </div>
+					      <div class='form-group'>
+					        <%= label_tag :UCDs, 'UCDs' %> <a id="manual_ucd-1" href="#" onclick="replace_manual_ucd(this.id);return false;">(or manually write the UCDs)</a> <br />
+					        <%= select_tag 'ucds[]', options_for_select(@ucds), { id: "ucds-1", class: "form-control" } %>
+					      </div>
+					      <div class='form-group'>
+					        <%= label_tag :required, 'Is this column required?' %><br />
+					        <%= select_tag 'required[]', options_for_select([['Yes', true], ['No', false]]), class: 'form-control' %>
+					      </div>
+
+					      <hr />
+					    </div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="text-center">
+					<button type="button" class="btn text-center">Agregar columna</button>
+				</div>
+
+				<hr />
+
+				<h3 class="text-center">Servicios/protocolos</h3>
+
+				<br />
+
+				<div class="text-center">
+					<button type="button" class="btn text-center">Agregar servicio/protocolo</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xs-4">
+		<div class="text-center">
+			<br />
+			<button type="button" class="btn text-center">Agregar tabla</button>
+		</div>
+	</div>
+</div>
+
+<div class="text-center">
+	<br />
+	<button type="button" class="btn text-center">Submit</button>
+</div>
