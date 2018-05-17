@@ -3,43 +3,53 @@
 		<%= hidden_field_tag 'data_product_id', @data_product.id %>
 		<div class='form-group'>
 			<%= form.label :title %><br />
-			<%= form.text_field :title, class: 'form-control', value: @data_product.metadatum.title, placeholder: 'A title for your dataset' %>
+			<%= form.text_field :title, class: 'form-control', value: @data_product.metadatum.title %>
+			<small class="form-text text-muted">A title for your dataset.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :description %><br />
-			<%= form.text_area :description, class: 'form-control', size: '50x10', value: @data_product.metadatum.description, placeholder: 'Give a description for your data' %>
+			<%= form.text_area :description, class: 'form-control', size: '50x10', value: @data_product.metadatum.description %>
+			<small class="form-text text-muted">A description for your data.</small>
 		</div>
 		<div class='form-group'>
-			<%= form.label :creators %> (<em>'If there's more than one, separate by semicolon</em>) <br />
+			<%= form.label :creators %><br />
 			<%= form.text_field :creators, class: 'form-control', value: @data_product.metadatum.creators %>
+			<small class="form-text text-muted">The authors of the data, separated by semicolon.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :source %><br />
-			<%= form.text_field :source, class: 'form-control', value: @data_product.metadatum.source, placeholder: 'From where the data belongs' %>
+			<%= form.text_field :source, class: 'form-control', value: @data_product.metadatum.source %>
+			<small class="form-text text-muted">From where the data belongs.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :subjects %><br />
 			<%= form.select :subjects, options_for_select(@subjects.map { |s| [s.strip] }, @data_product.metadatum.subjects.split(';')), {}, { multiple: true, class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<small class="form-text text-muted">The subjects to which the data belong.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :instrument %><br />
-			<%= form.text_field :instrument, class: 'form-control', value: @data_product.metadatum.instrument, placeholder: 'The instrument that produced the data' %>
+			<%= form.text_field :instrument, class: 'form-control', value: @data_product.metadatum.instrument %>
+			<small class="form-text text-muted">The instrument that produced the data.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :facility %><br />
-			<%= form.text_field :facility, class: 'form-control', value: @data_product.metadatum.facility, placeholder: 'The facility at which the data was taken' %>
+			<%= form.text_field :facility, class: 'form-control', value: @data_product.metadatum.facility %>
+			<small class="form-text text-muted">The facility at which the data was taken.</small>
 		</div>
 		<div class='form-group'>
-			<%= form.label :type %><br />
-			<%= form.select :type_alt, options_for_select(@types.map { |t| [t.strip] }.insert(0, ''), @data_product.metadatum.type_alt), {}, { class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<%= form.label :types %><br />
+			<%= form.select :types, options_for_select(@types.map { |t| [t.strip] }, @data_product.metadatum.types.split(';')), {}, { multiple: true, class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<small class="form-text text-muted">The type of the data.</small>
 		</div>
 		<div class='form-group'>
-			<%= form.label :coverage_waveband %><br />
-			<%= form.select :coverage_waveband, options_for_select(@coverage_wavebands.map { |cw| [cw.strip] }, @data_product.metadatum.coverage_waveband.split(';')), {}, { multiple: true, class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<%= form.label :coverage_wavebands %><br />
+			<%= form.select :coverage_wavebands, options_for_select(@coverage_wavebands.map { |cw| [cw.strip] }, @data_product.metadatum.coverage_wavebands.split(';')), {}, { multiple: true, class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<small class="form-text text-muted">The waveband to which the data belongs.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :hdu_index, 'HDU Index' %><br />
 			<%= form.number_field :hdu_index, value: @data_product.hdu_index, min: '0', class: "form-control" %>
+			<small class="form-text text-muted">The HDU that you want to use.</small>
 		</div>
 		<div class='actions'>
 			<br /><%= form.submit %>

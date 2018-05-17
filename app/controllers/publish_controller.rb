@@ -74,9 +74,11 @@ class PublishController < ApplicationController
 
         subjects = metadatum_params[:subjects].reject { |s| s.empty? }.join(';')
 
-        coverage_waveband = metadatum_params[:coverage_waveband].reject { |cw| cw.empty? }.join(';')
+        coverage_wavebands = metadatum_params[:coverage_wavebands].reject { |cw| cw.empty? }.join(';')
 
-        @data_product.metadatum.update_attributes(metadatum_params.except(:coverage_waveband).except(:subjects).merge(coverage_waveband: coverage_waveband).merge(subjects: subjects))
+        types = metadatum_params[:types].reject { |ta| ta.empty? }.join(';')
+
+        @data_product.metadatum.update_attributes(metadatum_params.except(:coverage_wavebands).except(:subjects).except(:types).merge(coverage_wavebands: coverage_wavebands).merge(subjects: subjects).merge(types: types))
 
         redirect_to action: 'parse_match', id: @data_product.id
       rescue StandardError => error
@@ -164,18 +166,20 @@ class PublishController < ApplicationController
               xml.meta('name' => 'subject') { xml.text("#{subject}") }
             end
 
-            xml.meta('name' => 'type') { xml.text("#{data_product.metadatum.type_alt}") }
+            data_product.metadatum.types.split(';').map(&:strip).each do |type|
+              xml.meta('name' => 'type') { xml.text("#{type}") }
+            end
 
             xml.meta('name' => 'facility') { xml.text("#{data_product.metadatum.facility}") }
             xml.meta('name' => 'instrument') { xml.text("#{data_product.metadatum.instrument}") }
 
-            coverage_wavebands = data_product.metadatum.coverage_waveband.split(';')
+            coverage_wavebands = data_product.metadatum.coverage_wavebands.split(';')
 
             if coverage_wavebands.length == 1
               xml.meta('name' => 'coverage.waveband') { xml.text("#{coverage_wavebands.first}") }
             else
               xml.meta('name' => 'coverage') do
-                data_product.metadatum.coverage_waveband.split(';').map(&:strip).each do |waveband|
+                data_product.metadatum.coverage_wavebands.split(';').map(&:strip).each do |waveband|
                   xml.meta('name' => 'waveband') { xml.text("#{waveband}") }
                 end
               end       
@@ -250,8 +254,6 @@ class PublishController < ApplicationController
                   xml.FEED('source' => '//scs#coreDescs')
                 end
 
-                xml.publish('render' => 'scs.xml', 'sets' => 'ivo_managed')
-
                 xml.outputTable('verbLevel' => '20')
               end
 
@@ -306,6 +308,6 @@ class PublishController < ApplicationController
   private
 
     def metadatum_params
-      params.permit(:title, :description, :creators, :instrument, :facility, :type_alt, :source, subjects: [], coverage_waveband: [])
+      params.permit(:title, :description, :creators, :instrument, :facility, :source, types: [], subjects: [], coverage_wavebands: [])
     end
 end

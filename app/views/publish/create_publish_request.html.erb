@@ -2,19 +2,23 @@
 	<%= form_with url: publish_create_publish_request_path, local: true, method: :post do |form| %>
 		<div class='form-group'>
 			<%= form.label :title %><br />
-			<%= form.text_field :title, class: 'form-control', placeholder: 'A title for your dataset' %>
+			<%= form.text_field :title, class: 'form-control' %>
+			<small class="form-text text-muted">A title for your dataset.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :description %><br />
-			<%= form.text_area :description, class: 'form-control', size: '50x10', placeholder: 'Give a description for your data' %>
+			<%= form.text_area :description, class: 'form-control', size: '50x10' %>
+			<small class="form-text text-muted">A description for your data.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :data %><br />
-			<%= form.file_field :data, placeholder: 'The facility at which the data was taken' %>
+			<%= form.file_field :data %>
+			<small class="form-text text-muted">Your data.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :hdu_index, 'HDU Index' %><br />
-			<%= form.number_field :hdu_index %>
+			<%= form.number_field :hdu_index, min: '0', class: "form-control" %>
+			<small class="form-text text-muted">The HDU that you want to use.</small>
 		</div>
 		<div class='actions'>
 			<br /><%= form.submit %>

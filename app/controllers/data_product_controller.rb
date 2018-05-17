@@ -55,11 +55,13 @@ class DataProductController < ApplicationController
 
 				subjects = metadatum_params[:subjects].reject { |s| s.empty? }.join(';')
 
-				coverage_waveband = metadatum_params[:coverage_waveband].reject { |cw| cw.empty? }.join(';')
+				coverage_wavebands = metadatum_params[:coverage_wavebands].reject { |cw| cw.empty? }.join(';')
+
+				types = metadatum_params[:types].reject { |ta| ta.empty? }.join(';')
 
 				data_product.update_attribute('hdu_index', params[:hdu_index])
 
-				data_product.metadatum.update_attributes(metadatum_params.except(:coverage_waveband).except(:subjects).merge(coverage_waveband: coverage_waveband).merge(subjects: subjects))
+				data_product.metadatum.update_attributes(metadatum_params.except(:coverage_wavebands).except(:subjects).except(:types).merge(coverage_wavebands: coverage_wavebands).merge(subjects: subjects).merge(types: types))
 		
 				redirect_to data_product_show_path(id: data_product.id), notice: 'Se actualizaron los datos'
       rescue StandardError => error
@@ -70,11 +72,13 @@ class DataProductController < ApplicationController
 		else
 			subjects = metadatum_params[:subjects].reject { |s| s.empty? }.join(';')
 
-			coverage_waveband = metadatum_params[:coverage_waveband].reject { |cw| cw.empty? }.join(';')
+			coverage_wavebands = metadatum_params[:coverage_wavebands].reject { |cw| cw.empty? }.join(';')
+
+			types = metadatum_params[:types].reject { |ta| ta.empty? }.join(';')
 
 			data_product.update_attribute('hdu_index', params[:hdu_index])
 
-			data_product.metadatum.update_attributes(metadatum_params.except(:coverage_waveband).except(:subjects).merge(coverage_waveband: coverage_waveband).merge(subjects: subjects))
+			data_product.metadatum.update_attributes(metadatum_params.except(:coverage_wavebands).except(:subjects).except(:types).merge(coverage_wavebands: coverage_wavebands).merge(subjects: subjects).merge(types: types))
 	
 			redirect_to data_product_show_path(id: data_product.id), notice: 'Se actualizaron los datos'
 		end
@@ -101,6 +105,6 @@ class DataProductController < ApplicationController
 	  end
 
     def metadatum_params
-      params.permit(:title, :description, :creators, :instrument, :facility, :type_alt, :source, subjects: [], coverage_waveband: [])
+      params.permit(:title, :description, :creators, :instrument, :facility, :source, types: [], subjects: [], coverage_wavebands: [])
     end
 end

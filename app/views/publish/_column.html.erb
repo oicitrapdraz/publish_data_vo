@@ -3,33 +3,40 @@
 <div class='form-group'>
 	<%= label_tag :identifier %><br />
 	<%= select_tag 'identifier[]', options_for_select(@columns), { id: "identifier-tmp", onchange: "identifier_selected(this.id)", class: "form-control" } %>
+	<small class="form-text text-muted">The column identifier in your file.</small>
 </div>
 <div class='form-group'>
-	<%= hidden_field_tag 'name[]', nil,  id: "name-tmp", class: 'form-control', placeholder: 'A name for this column' %>
+	<%= hidden_field_tag 'name[]', nil,  id: "name-tmp", class: 'form-control' %>
 </div>
 <div class='form-group'>
 	<%= label_tag :description %><br />
-	<%= text_field_tag 'description[]', nil, class: 'form-control', placeholder: 'A description for this column' %>
+	<%= text_field_tag 'description[]', nil, class: 'form-control' %>
+	<small class="form-text text-muted">A description for the data in this column.</small>
 </div>
 <div class='form-group'>
 	<%= label_tag :type %><br />
 	<%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }), class: "form-control" %>
+	<small class="form-text text-muted">The data type of the data in this column.</small>
 </div>
 <div class='form-group'>
 	<%= label_tag :verb_level %><br />
 	<%= select_tag 'verb_level[]', options_for_select(1..30), class: 'form-control' %>
+	<small class="form-text text-muted">The importance of the data in this column. 1 is very important, 30 is not important.</small>
 </div>
 <div class='form-group'>
 	<%= label_tag :unit %> <a id="manual_unit-tmp" href="#" onclick="replace_manual_unit(this.id);return false;">(or manually write the unit)</a> <br />
 	<%= select_tag 'unit[]', options_for_select(@units), { id: "unit-tmp", class: "form-control" } %>
+	<small class="form-text text-muted">The unit of the data in this column.</small>
 </div>
 <div class='form-group'>
   <%= label_tag :UCDs, 'UCDs' %> <a id="manual_ucd-tmp" href="#" onclick="replace_manual_ucd(this.id);return false;">(or manually write the UCDs)</a> <br />
 	<%= select_tag 'ucds[]', options_for_select(@ucds), { id: "ucds-tmp", class: "form-control" } %>
+	<small class="form-text text-muted">The UCD of the data in this column.</small>
 </div>
 <div class='form-group'>
 	<%= label_tag :required, 'Is this column required?' %><br />
 	<%= select_tag 'required[]', options_for_select(['Yes', 'No']), class: 'form-control' %>
+	<small class="form-text text-muted">If it's required, then there can't be nulls in this column.</small>
 </div>
 
 <hr />

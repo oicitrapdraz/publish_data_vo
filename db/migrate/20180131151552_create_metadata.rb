@@ -9,8 +9,8 @@ class CreateMetadata < ActiveRecord::Migration[5.1]
       t.string :source
       t.string :instrument
       t.string :facility
-      t.string :type_alt
-      t.string :coverage_waveband
+      t.string :types
+      t.string :coverage_wavebands
 
       t.timestamps
     end

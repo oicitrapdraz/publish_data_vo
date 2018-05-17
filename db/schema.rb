@@ -67,8 +67,8 @@ ActiveRecord::Schema.define(version: 20180213041325) do
     t.string "source"
     t.string "instrument"
     t.string "facility"
-    t.string "type_alt"
-    t.string "coverage_waveband"
+    t.string "types"
+    t.string "coverage_wavebands"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["data_product_id"], name: "index_metadata_on_data_product_id"

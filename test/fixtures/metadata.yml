@@ -11,7 +11,7 @@ one:
   facility: MyString
   type: 
   coverage_profile: MyString
-  coverage_waveband: MyString
+  coverage_wavebands: MyString
 
 two:
   data_product: two
@@ -24,4 +24,4 @@ two:
   facility: MyString
   type: 
   coverage_profile: MyString
-  coverage_waveband: MyString
+  coverage_wavebands: MyString

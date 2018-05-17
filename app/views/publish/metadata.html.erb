@@ -3,32 +3,39 @@
 		<%= hidden_field_tag 'data_product_id', @data_product.id %>
 
 		<div class='form-group'>
-			<%= form.label :creators %> (<em>'If there's more than one, separate by semicolon</em>) <br />
+			<%= form.label :creators %> <br />
 			<%= form.text_field :creators, value: @creators, class: 'form-control' %>
+			<small class="form-text text-muted">The authors of the data, separated by semicolon.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :source %><br />
-			<%= form.text_field :source, class: 'form-control', placeholder: 'From where the data belongs' %>
+			<%= form.text_field :source, class: 'form-control' %>
+			<small class="form-text text-muted">From where the data belongs.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :subjects %><br />
 			<%= form.select :subjects, options_for_select(@subjects.map { |s| [s.strip] }), {}, { multiple: true, class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<small class="form-text text-muted">The subjects to which the data belong.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :instrument %><br />
-			<%= form.text_field :instrument, value: @instrument, class: 'form-control', placeholder: 'The instrument that produced the data' %>
+			<%= form.text_field :instrument, value: @instrument, class: 'form-control' %>
+			<small class="form-text text-muted">The instrument that produced the data.</small>
 		</div>
 		<div class='form-group'>
 			<%= form.label :facility %><br />
-			<%= form.text_field :facility, value: @facility, class: 'form-control', placeholder: 'The facility at which the data was taken' %>
+			<%= form.text_field :facility, value: @facility, class: 'form-control' %>
+			<small class="form-text text-muted">The facility at which the data was taken.</small>
 		</div>
 		<div class='form-group'>
-			<%= form.label :type %><br />
-			<%= form.select :type_alt, options_for_select(@types.map { |t| [t.strip] }), {}, { class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<%= form.label :types %><br />
+			<%= form.select :types, options_for_select(@types.map { |t| [t.strip] }), {}, { multiple: true, class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<small class="form-text text-muted">The type of the data.</small>
 		</div>
 		<div class='form-group'>
-			<%= form.label :coverage_waveband %><br />
-			<%= form.select :coverage_waveband, options_for_select(@coverage_wavebands.map { |cw| [cw.strip] }), {}, { multiple: true, class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<%= form.label :coverage_wavebands %><br />
+			<%= form.select :coverage_wavebands, options_for_select(@coverage_wavebands.map { |cw| [cw.strip] }), {}, { multiple: true, class: "form-control selectpicker", "data-live-search" => "true" } %>
+			<small class="form-text text-muted">The waveband to which the data belongs.</small>
 		</div>
 		<div class='actions'>
 			<br /><%= form.submit %>
