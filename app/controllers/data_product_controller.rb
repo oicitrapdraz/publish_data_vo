@@ -29,6 +29,8 @@ class DataProductController < ApplicationController
 
 		@columns = fits['columns'].insert(0, '')
 
+		@raw_comments = fits['comments']
+		@raw_formats = fits['formats']
 		@raw_units = fits['units']
 		@raw_ucds = fits['ucds']
 

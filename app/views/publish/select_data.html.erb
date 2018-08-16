@@ -1,0 +1,36 @@
+<h1 class="text-center">Select Data to publish</h1>
+<br />
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 text-center">
+    <ol class="progress-meter">
+      <li class="progress-point done">Basic Data Input</li>
+      <li class="progress-point done">General Metadata Input</li>
+      <li class="progress-point todo">Select Data to publish</li>
+      <li class="progress-point todo">Data Metadata input</li>
+    </ol>
+  </div>
+</div>
+<br />
+<div class="row">
+  <div class="row">
+    <div class='col-xs-10 col-xs-offset-1'>
+      <p class="text-center">In order to be able to use the SCS protocol in your data, it's necessary that at least you provide positional data, with pos.eq.ra;meta.main and pos.eq.dec;meta.main UCDs, and a third column that acts as an identifier with the meta.id;meta.main UCD</p>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class='col-xs-4 col-xs-offset-4'>
+      <%= form_with url: publish_select_data_path, local: true, method: :post do |form| %>
+        <%= hidden_field_tag 'data_product_id', @data_product.id %>
+
+        <%= select_tag 'columns', options_for_select(@columns), { id: "columns-select", multiple: true, class: "form-control" } %>
+
+        <div class='actions'>
+          <br /><%= form.submit "Next" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+  <script type="text/javascript">$('#columns-select').multiSelect()</script>

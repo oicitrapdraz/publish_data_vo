@@ -95,6 +95,8 @@ Solar System
 space biology
 stellar atmosphere
 stellar interior
+supernova
+supernova remnant
 tip-tilt mirror
 urca process
 zodiacal dust

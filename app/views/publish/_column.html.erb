@@ -10,12 +10,12 @@
 </div>
 <div class='form-group'>
 	<%= label_tag :description %><br />
-	<%= text_field_tag 'description[]', nil, class: 'form-control' %>
+	<%= text_field_tag 'description[]', nil, id: "description-tmp", class: 'form-control' %>
 	<small class="form-text text-muted">A description for the data in this column.</small>
 </div>
 <div class='form-group'>
 	<%= label_tag :type %><br />
-	<%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }), class: "form-control" %>
+	<%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }), { id: "type-tmp", class: "form-control" } %>
 	<small class="form-text text-muted">The data type of the data in this column.</small>
 </div>
 <div class='form-group'>

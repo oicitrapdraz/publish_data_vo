@@ -9,12 +9,14 @@ if __name__ == '__main__':
 
 	columns = hdulist[hdu_index].columns.names
 	units = hdulist[hdu_index].columns.units
+	formats = hdulist[hdu_index].columns.formats
 
 	ucds = []
+	comments = []
 
-	for j in range(len(columns)):
-		ucd_key = "TBUCD{}".format(j + 1)
-		ucd_key_2 = "UCD__{}".format(j + 1)
+	for i in range(len(columns)):
+		ucd_key = "TBUCD{}".format(i + 1)
+		ucd_key_2 = "UCD__{}".format(i + 1)
 
 		if (ucd_key in hdulist[hdu_index].header):
 			ucds.append(hdulist[hdu_index].header[ucd_key])
@@ -23,6 +25,28 @@ if __name__ == '__main__':
 		else:
 			ucds.append("")
 
-	result = {'index': hdu_index, 'columns': list(columns), 'units': list(units), 'ucds': ucds}
+		comment_key = "TCOMM{}".format(i + 1)
+
+		if (comment_key in hdulist[hdu_index].header):
+			comments.append(hdulist[hdu_index].header[comment_key])
+		else:
+			comments.append("")
+
+		format_cleaned = ''.join([x for x in formats[i] if not x.isdigit()])
+
+		if (format_cleaned == 'D'):
+			formats[i] = 'double precision'
+		elif (format_cleaned == 'E'):
+			formats[i] = 'real'
+		elif (format_cleaned == 'J'):
+			formats[i] = 'integer'
+		elif (format_cleaned == 'I'):
+			formats[i] = 'smallint'
+		elif (formats[i] == 'A'):
+			formats[i] = 'char'
+		else:
+			formats[i] = 'text'
+
+	result = {'index': hdu_index, 'columns': list(columns), 'comments': comments, 'formats': formats, 'units': list(units), 'ucds': ucds}
 
 	json.dump(result, sys.stdout)

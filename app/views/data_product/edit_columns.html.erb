@@ -8,52 +8,51 @@
     <%= hidden_field_tag 'id', "#{@data_product.id}" %>
 
     <div id='column_set'>
-    <% @data_product.fits_columns.each_with_index do |col, index| %>
-      <p><h3>Column</h3></p>
+      <% @data_product.fits_columns.each_with_index do |col, index| %>
+        <p><h3>Column</h3></p>
 
-      <%= hidden_field_tag 'fits_column_id[]', col.id %>
+        <%= hidden_field_tag 'fits_column_id[]', col.id %>
 
-      <div class='form-group'>
-        <%= label_tag :identifier %><br />
-        <%= select_tag 'identifier[]', options_for_select(@columns, col.identifier), { id: "identifier-#{index + 1}", onchange: "identifier_selected(this.id)", class: "form-control" } %>
-        <small class="form-text text-muted">The column identifier in your file.</small>
-      </div>
-      <div class='form-group'>
-        <%= label_tag :name %><br />
-        <%= text_field_tag 'name[]', nil, value: col.name, class: 'form-control' %>
-      </div>
-      <div class='form-group'>
-        <%= label_tag :description %><br />
-        <%= text_field_tag 'description[]', nil, value: col.description, class: 'form-control' %>
-        <small class="form-text text-muted">A description for the data in this column.</small>
-      </div>
-      <div class='form-group'>
-        <%= label_tag :type %><br />
-        <%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }, col.type_alt), class: "form-control" %>
-        <small class="form-text text-muted">The data type of the data in this column.</small>
-      </div>
-      <div class='form-group'>
-        <%= label_tag :verb_level %><br />
-        <%= select_tag 'verb_level[]', options_for_select(1..30, col.verb_level), class: 'form-control' %>
-        <small class="form-text text-muted">The importance of the data in this column. 1 is very important, 30 is not important.</small>
-      </div>
-      <div class='form-group'>
-        <%= label_tag :unit %> <a id=<%= "manual_unit-#{index + 1}" %> href="#" onclick="replace_manual_unit(this.id);return false;">(or manually write the unit)</a> <br />
-        <%= select_tag 'unit[]', options_for_select(@units, col.unit), { id: "unit-#{index + 1}", class: "form-control" } %>
-        <small class="form-text text-muted">The unit of the data in this column.</small>
-      </div>
-      <div class='form-group'>
-        <%= label_tag :UCDs, 'UCDs' %> <a id=<%= "manual_ucd-#{index + 1}" %> href="#" onclick="replace_manual_ucd(this.id);return false;">(or manually write the UCDs)</a> <br />
-        <%= select_tag 'ucds[]', options_for_select(@ucds, col.ucds), { id: "ucds-#{index + 1}", class: "form-control" } %>
-        <small class="form-text text-muted">The UCD of the data in this column.</small>
-      </div>
-      <div class='form-group'>
-        <%= label_tag :required, 'Is this column required?' %><br />
-        <%= select_tag 'required[]', options_for_select([['Yes', true], ['No', false]], col.required), class: 'form-control' %>
-        <small class="form-text text-muted">If it's required, then there can't be nulls in this column.</small>
-      </div>
+        <div class='form-group'>
+          <%= label_tag :identifier %><br />
+          <%= select_tag 'identifier[]', options_for_select(@columns, col.identifier), { id: "identifier-#{index + 1}", onchange: "identifier_selected(this.id)", class: "form-control" } %>
+          <small class="form-text text-muted">The column identifier in your file.</small>
+        </div>
+        <div class='form-group'>
+          <%= hidden_field_tag 'name[]', nil, value: col.name, class: 'form-control' %>
+        </div>
+        <div class='form-group'>
+          <%= label_tag :description %><br />
+          <%= text_field_tag 'description[]', nil, value: col.description, id: "description-#{index + 1}", class: 'form-control' %>
+          <small class="form-text text-muted">A description for the data in this column.</small>
+        </div>
+        <div class='form-group'>
+          <%= label_tag :type %><br />
+          <%= select_tag 'type_alt[]', options_for_select(@types.map { |s| [s.strip] }, col.type_alt), { id: "type-#{index + 1}", class: "form-control" } %>
+          <small class="form-text text-muted">The data type of the data in this column.</small>
+        </div>
+        <div class='form-group'>
+          <%= label_tag :verb_level %><br />
+          <%= select_tag 'verb_level[]', options_for_select(1..30, col.verb_level), class: 'form-control' %>
+          <small class="form-text text-muted">The importance of the data in this column. 1 is very important, 30 is not important.</small>
+        </div>
+        <div class='form-group'>
+          <%= label_tag :unit %> <a id=<%= "manual_unit-#{index + 1}" %> href="#" onclick="replace_manual_unit(this.id);return false;">(or manually write the unit)</a> <br />
+          <%= select_tag 'unit[]', options_for_select(@units, col.unit), { id: "unit-#{index + 1}", class: "form-control" } %>
+          <small class="form-text text-muted">The unit of the data in this column.</small>
+        </div>
+        <div class='form-group'>
+          <%= label_tag :UCDs, 'UCDs' %> <a id=<%= "manual_ucd-#{index + 1}" %> href="#" onclick="replace_manual_ucd(this.id);return false;">(or manually write the UCDs)</a> <br />
+          <%= select_tag 'ucds[]', options_for_select(@ucds, col.ucds), { id: "ucds-#{index + 1}", class: "form-control" } %>
+          <small class="form-text text-muted">The UCD of the data in this column.</small>
+        </div>
+        <div class='form-group'>
+          <%= label_tag :required, 'Is this column required?' %><br />
+          <%= select_tag 'required[]', options_for_select([['Yes', true], ['No', false]], col.required), class: 'form-control' %>
+          <small class="form-text text-muted">If it's required, then there can't be nulls in this column.</small>
+        </div>
 
-      <hr />
+        <hr />
 
       <% end %>
     </div>
@@ -74,9 +73,13 @@
 
     columns = <%= raw @columns.to_json %>
 
+    raw_comments = <%= raw @raw_comments.to_json %>
+    raw_formats = <%= raw @raw_formats.to_json %>
     raw_units = <%= raw @raw_units.to_json %>
     raw_ucds = <%= raw @raw_ucds.to_json %>
 
+    col_comments = <%= raw @data_product.fits_columns.pluck(:description) %>
+    col_formats = <%= raw @data_product.fits_columns.pluck(:type_alt) %>
     col_units = <%= raw @data_product.fits_columns.pluck(:unit) %>
     col_ucds = <%= raw @data_product.fits_columns.pluck(:ucds) %>
 
@@ -88,10 +91,10 @@
   })
 
   function identifier_selected(id) {
-    var column = id.split("-")
+    column = id.split("-")
 
-    var column_index = parseInt(column[column.length - 1])
-    var selected_index = document.getElementById(id).selectedIndex
+    column_index = parseInt(column[column.length - 1])
+    selected_index = document.getElementById(id).selectedIndex
 
     if (raw_units[selected_index - 1] && raw_units.indexOf(col_units[column_index - 1]) > -1 ) {
       $(`#unit-${column_index}`).replaceWith(unit_html.replace('unit-tmp', `unit-${column_index}`))
@@ -110,17 +113,17 @@
   }
 
   function replace_manual_unit(id) {
-    var column = id.split("-")
+    column = id.split("-")
 
-    var column_index = parseInt(column[column.length - 1])
+    column_index = parseInt(column[column.length - 1])
 
     $(`#unit-${column_index}`).replaceWith(`<input type='text' name='unit[]'' id='unit-${column_index}' class='form-control' />`)
   }
 
   function replace_manual_ucd(id) {
-    var column = id.split("-")
+    column = id.split("-")
 
-    var column_index = parseInt(column[column.length - 1])
+    column_index = parseInt(column[column.length - 1])
 
     $(`#ucds-${column_index}`).replaceWith(`<input type='text' name='ucds[]'' id='ucds-${column_index}' class='form-control' />`)
   }

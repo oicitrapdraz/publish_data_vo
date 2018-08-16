@@ -30,7 +30,10 @@
 <% @data_product.fits_columns.each do |col| %>
 	<h4><strong><%= col.name %></strong> (<small><%= col.identifier %> in FITS</small>)</h4>
 	
+	<% if not col.description.blank? %>
 	<p><strong>Description</strong>: <%=  col.description %></p>
+	<% end %>
+
 	<p><strong>Type</strong>: <%=  col.type_alt %></p>
 	<p><strong>Verb</strong>: <%=  col.verb_level %></p>
 

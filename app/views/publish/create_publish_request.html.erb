@@ -1,27 +1,42 @@
-<div class='col-xs-8 col-xs-offset-2'>
-	<%= form_with url: publish_create_publish_request_path, local: true, method: :post do |form| %>
-		<div class='form-group'>
-			<%= form.label :title %><br />
-			<%= form.text_field :title, class: 'form-control' %>
-			<small class="form-text text-muted">A title for your dataset.</small>
-		</div>
-		<div class='form-group'>
-			<%= form.label :description %><br />
-			<%= form.text_area :description, class: 'form-control', size: '50x10' %>
-			<small class="form-text text-muted">A description for your data.</small>
-		</div>
-		<div class='form-group'>
-			<%= form.label :data %><br />
-			<%= form.file_field :data %>
-			<small class="form-text text-muted">Your data.</small>
-		</div>
-		<div class='form-group'>
-			<%= form.label :hdu_index, 'HDU Index' %><br />
-			<%= form.number_field :hdu_index, min: '0', class: "form-control" %>
-			<small class="form-text text-muted">The HDU that you want to use.</small>
-		</div>
-		<div class='actions'>
-			<br /><%= form.submit %>
-		</div>
-	<% end %>
+<h1 class="text-center">Basic Data Input</h1>
+<br />
+<div class="row">
+	<div class="col-xs-10 col-xs-offset-1 text-center">
+	  <ol class="progress-meter">
+      <li class="progress-point todo">Basic Data Input</li>
+      <li class="progress-point todo">General Metadata Input</li>
+      <li class="progress-point todo">Select Data to publish</li>
+	    <li class="progress-point todo">Data Metadata input</li>
+	  </ol>
+	</div>
+</div>
+<br />
+<div class="row">
+	<div class='col-xs-8 col-xs-offset-2'>
+		<%= form_with url: publish_create_publish_request_path, local: true, method: :post do |form| %>
+			<div class='form-group'>
+				<%= form.label :title %><br />
+				<%= form.text_field :title, class: 'form-control' %>
+				<small class="form-text text-muted">A title for your dataset.</small>
+			</div>
+			<div class='form-group'>
+				<%= form.label :description %><br />
+				<%= form.text_area :description, class: 'form-control', size: '50x10' %>
+				<small class="form-text text-muted">A description for your data.</small>
+			</div>
+			<div class='form-group'>
+				<%= form.label :data %><br />
+				<%= form.file_field :data %>
+				<small class="form-text text-muted">Your data.</small>
+			</div>
+			<div class='form-group'>
+				<%= form.label :hdu_index, 'HDU Index' %><br />
+				<%= form.number_field :hdu_index, min: '0', class: "form-control" %>
+				<small class="form-text text-muted">The HDU that you want to use.</small>
+			</div>
+			<div class='actions'>
+				<br /><%= form.submit "Next" %>
+			</div>
+		<% end %>
+	</div>
 </div>

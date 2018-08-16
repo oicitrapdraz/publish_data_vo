@@ -80,11 +80,33 @@ class PublishController < ApplicationController
 
         @data_product.metadatum.update_attributes(metadatum_params.except(:coverage_wavebands).except(:subjects).except(:types).merge(coverage_wavebands: coverage_wavebands).merge(subjects: subjects).merge(types: types))
 
-        redirect_to action: 'parse_match', id: @data_product.id
+        redirect_to action: 'select_data', id: @data_product.id
       rescue StandardError => error
         puts(error)
         redirect_to publish_metadata_path(id: @data_product_id.id), flash: { alert: 'An error ocurred... Please be sure to fill in all the fields' }
       end
+    end
+  end
+
+  def select_data
+    if request.get?
+      @data_product = DataProduct.find(params[:id])
+
+      result = `python fits_column_parser.py #{File.join(@data_product.resource_directory, @data_product.filename)} #{@data_product.hdu_index}`
+      
+      fits = JSON.parse(result)
+
+      @columns = fits['columns']
+    end
+
+    if request.post?
+      @data_product = DataProduct.find(params[:data_product_id])
+
+      params[:columns].each_with_index { |val, index|
+        @data_product.fits_columns.create(identifier: val)
+      }
+
+      redirect_to action: 'parse_match', id: @data_product.id
     end
   end
 
@@ -100,6 +122,8 @@ class PublishController < ApplicationController
 
       @columns = fits['columns'].insert(0, '')
 
+      @raw_comments = fits['comments']
+      @raw_formats = fits['formats']
       @raw_units = fits['units']
       @raw_ucds = fits['ucds']
 
@@ -108,10 +132,11 @@ class PublishController < ApplicationController
     end
 
     if request.post?
-      data_product = DataProduct.find(params[:id])
+      params[:fits_column_id].each_with_index { |val, index|
 
-      params[:identifier].each_with_index { |val, index|
-        data_product.fits_columns.create(identifier: params[:identifier][index], name: params[:name][index], description: params[:description][index], type_alt: params[:type_alt][index], verb_level: params[:verb_level][index], unit: params[:unit][index], ucds: params[:ucds][index], required: params[:required][index])
+        col = FitsColumn.find(val)
+        
+        col.update_attributes(name: params[:name][index], description: params[:description][index], type_alt: params[:type_alt][index], verb_level: params[:verb_level][index], unit: params[:unit][index], ucds: params[:ucds][index], required: params[:required][index])
       }
 
       redirect_to action: 'end'
@@ -207,14 +232,23 @@ class PublishController < ApplicationController
 
             xml.table(table_att) do
               data_product.fits_columns.each do |col|
-                if col.ucds.blank? and col.unit.blank? 
-                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
-                elsif col.ucds.blank?
-                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'unit' => "#{col.unit}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
-                elsif col.unit.blank?
-                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'ucd' => "#{col.ucds}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
-                else
-                  column_att = {'name' => "#{col.name}", 'description' => "#{col.description}", 'type' => "#{col.type_alt}", 'ucd' => "#{col.ucds}", 'unit' => "#{col.unit}", 'verbLevel' => "#{col.verb_level}", 'required' => "#{col.required.to_s.capitalize}"}
+                column_att = Hash.new
+
+                column_att["name"] = "#{col.name}"
+                column_att[:verbLevel] = "#{col.verb_level}"
+                column_att[:type] = "#{col.type_alt}"
+                column_att[:required] = "#{col.required.to_s.capitalize}"
+
+                if not col.description.blank?
+                  column_att[:description] = "#{col.description}"
+                end
+
+                if not col.unit.blank?
+                  column_att[:unit] = "#{col.unit}"
+                end
+
+                if not col.ucds.blank?
+                  column_att[:ucd] = "#{col.ucds}"
                 end
 
                 xml.column(column_att)
@@ -246,9 +280,12 @@ class PublishController < ApplicationController
             end
 
             if ra_presence and dec_presence and id_prescence
+              shortname = data_product.metadatum.title.downcase.split.map(&:first).join
+
               xml.service('id' => 'cone', 'defaultRenderer' => 'form', 'allowed' => 'scs.xml,form,static') do
-                xml.meta('name' => 'title') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} SCS") }
-                xml.meta('name' => 'shortName') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase}c") }
+                xml.meta('name' => 'title') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} SCS") }     
+
+                xml.meta('name' => 'shortName') { xml.text("#{shortname}c") }
 
                 xml.scsCore('queriedTable' => 'main') do
                   xml.FEED('source' => '//scs#coreDescs')
@@ -259,7 +296,7 @@ class PublishController < ApplicationController
 
               xml.service('id' => 'get_data', 'defaultRenderer' => 'form', 'allowed' => 'form,static') do
                 xml.meta('name' => 'title') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} Get data") }
-                xml.meta('name' => 'shortName') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase}gd") }
+                xml.meta('name' => 'shortName') { xml.text("#{shortname}gd") }
 
                 xml.dbCore('queriedTable' => 'main') do
                   xml.condDesc do
@@ -272,7 +309,10 @@ class PublishController < ApplicationController
             elsif id_prescence
               xml.service('id' => 'get_data', 'defaultRenderer' => 'form', 'allowed' => 'form,static') do
                 xml.meta('name' => 'title') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase} Get data") }
-                xml.meta('name' => 'shortName') { xml.text("#{data_product.metadatum.title.split(' ').first.downcase}gd") }
+
+                shortname = data_product.metadatum.title.downcase.split.map(&:first).join
+
+                xml.meta('name' => 'shortName') { xml.text("#{shortname}gd") }
 
                 xml.dbCore('queriedTable' => 'main') do
                   xml.condDesc do
@@ -292,6 +332,7 @@ class PublishController < ApplicationController
 
         redirect_to publish_generate_rd_path, flash: { notice: 'Successfully generated the resource descriptor...' }
       rescue StandardError => error
+        puts(error)
         redirect_to publish_generate_rd_path, flash: { alert: 'An error ocurred during this proccess...' }
       end
     end
