@@ -5,14 +5,18 @@ default: &default
 
 development:
   <<: *default
-  database: publish_data_vo_development
+  username: tester
+  password: <%= ENV['TESTER_POSTGRES_PASS'] %>
+  database: test_publish_data_vo_development
 
 test:
   <<: *default
-  database: publish_data_vo_test
+  username: tester
+  password: <%= ENV['TESTER_POSTGRES_PASS'] %>
+  database: test_publish_data_vo_test
 
 production:
   <<: *default
+  username: postgres
+  password: 
   database: publish_data_vo_production
-  username: publish_data_vo
-  password: <%= ENV['PUBLISH_DATA_VO_DATABASE_PASSWORD'] %>
